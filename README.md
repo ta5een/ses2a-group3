@@ -3,7 +3,7 @@
 Members:
 - Allaa Abu-Dareb
 - Harrison Nguyen
-- Ka Sheun Derek Ma (Derek)
+- Ka Sheun Derek Ma
 - Mohammed Ta-Seen Islam
 - Riley Stephenson
 - Stephanie Hills
