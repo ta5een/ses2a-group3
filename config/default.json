@@ -1,5 +1,0 @@
-{
-	"mongoURI": "mongodb+srv://root:root123@study-group-webapp.dkasc.mongodb.net/<dbname>?retryWrites=true&w=majority",
-	"jwtSecret": "mysecrettoken",
-	"githubToken": "2b48c7652e85eb75dae11cbbeef1987fb5e45291"
-}
