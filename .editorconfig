@@ -1,0 +1,12 @@
+# This is the top-most EditorConfig file
+root = true
+
+# Line endings
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# Indentation settings for Javascript files
+[*.{js,jsx}]
+indent_style = space
+indent_size = 2
