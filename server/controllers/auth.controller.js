@@ -48,7 +48,8 @@ const signOut = (_req, res) => {
 
 const requireSignIn = expressJwt({
   secret: config.jwtSecret,
-  userProperty: 'auth'
+  userProperty: 'auth',
+  algorithms: ['HS256', 'RS256'],
 });
 
 const hasAuthorization = (req, res, next) => {

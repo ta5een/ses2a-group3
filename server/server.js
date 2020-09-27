@@ -21,4 +21,4 @@ app.listen(config.port, error => {
   } else {
     console.log(`Server started on port ${config.port}`);
   }
-})
+});
