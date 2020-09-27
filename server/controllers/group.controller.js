@@ -1,4 +1,4 @@
-import defaultImage from './../../client/assets/images/default.png';
+import defaultImage from './../../client/assets/images/avatar.png';
 import extend from 'lodash/extend';
 import errorHandler from './../helpers/dbErrorHandler';
 import formidable from 'formidable';
@@ -162,11 +162,12 @@ const photo = (req, res, next) => {
   }
   next();
 };
-const defaultPhoto = (req, res) => {
+
+const defaultPhoto = (_req, res) => {
   return res.sendFile(process.cwd() + defaultImage);
 };
 
-const listCategories = async (req, res) => {
+const listCategories = async (_req, res) => {
   try {
     let groups = await Group.distinct('category', {});
     res.json(groups);
