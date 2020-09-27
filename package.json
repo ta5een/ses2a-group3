@@ -1,8 +1,9 @@
 {
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "name": "ses2a",
+  "version": "0.1.0",
+  "author": "SES2A Group 3",
+  "license": "MIT",
+  "main": "./dist/server.generated.js",
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\"",
     "backend": "yarn workspace @group-interest/backend start",
@@ -12,6 +13,30 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "webpack": "^4.44.2"
+  },
+  "dependencies": {
+    "@hot-loader/react-dom": "^17.0.0-rc.2",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "eslint": "^7.10.0",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "formidable": "^1.2.2",
+    "global": "^4.4.0",
+    "helmet": "^4.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.7",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.13.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
   }
 }
