@@ -8,7 +8,7 @@ const config = {
   devtool: 'eval-source-map',
   entry: [
     'webpack-hot-middleware/client?reload=true',
-    path.join(CURRENT_WORKING_DIR, 'client/main.js'),
+    path.join(CURRENT_WORKING_DIR, 'client/index.js'),
   ],
   output: {
     path: path.join(CURRENT_WORKING_DIR, '/dist'),

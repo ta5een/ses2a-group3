@@ -5,16 +5,23 @@
   "license": "MIT",
   "main": "./dist/server.generated.js",
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\"",
-    "backend": "yarn workspace @group-interest/backend start",
-    "frontend": "yarn workspace @group-interest/client start",
-    "build": "cd packages/client && yarn build",
-    "test": "cd packages/client && yarn test"
+    "development": "nodemon",
+    "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
+    "start": "NODE_ENV=production node ./dist/server.generated.js"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
     "concurrently": "^5.2.0",
+    "file-loader": "^6.1.0",
     "nodemon": "^2.0.4",
-    "webpack": "^4.44.2"
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.0-rc.2",
