@@ -3,7 +3,7 @@ import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
 
-const signIn = async (req, res) => {
+const signin = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.body.email });
 
@@ -63,7 +63,7 @@ const hasAuthorization = (req, res, next) => {
 };
 
 export default {
-  signIn,
+  signin,
   signOut,
   requireSignIn,
   hasAuthorization,
