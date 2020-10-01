@@ -34,8 +34,8 @@ const signin = async (req, res) => {
         educator: user.educator
       },
     });
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
     return res.status('401').json({ error: 'Could not sign in' });
   }
 };

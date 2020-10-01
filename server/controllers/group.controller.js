@@ -8,8 +8,8 @@ import Group from '../models/group.model';
 const create = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
+  form.parse(req, async (error, fields, files) => {
+    if (error) {
       return res.status(400).json({ error: 'Image could not be uploaded' });
     }
 
@@ -24,9 +24,9 @@ const create = (req, res) => {
     try {
       let result = await group.save();
       res.json(result);
-    } catch (err) {
-      console.error(`A server error occurred: ${err}`);
-      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    } catch (error) {
+      console.error(`A server error occurred: ${error}`);
+      return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
     }
   });
 };
@@ -43,8 +43,8 @@ const groupByID = async (req, res, next, id) => {
 
     req.group = group;
     next();
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
     return res.status('400').json({ error: 'Could not retrieve group' });
   }
 };
@@ -58,17 +58,17 @@ const list = async (_req, res) => {
   try {
     let groups = await Group.find().select('name email updated created');
     res.json(groups);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
 const update = async (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
+  form.parse(req, async (error, fields, files) => {
+    if (error) {
       return res.status(400).json({
         error: 'Photo could not be uploaded'
       });
@@ -91,9 +91,9 @@ const update = async (req, res) => {
     try {
       await group.save();
       res.json(group);
-    } catch (err) {
-      console.error(`A server error occurred: ${err}`);
-      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    } catch (error) {
+      console.error(`A server error occurred: ${error}`);
+      return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
     }
   });
 };
@@ -112,9 +112,9 @@ const newContent = async (req, res) => {
         .exec();
 
     res.json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -123,9 +123,9 @@ const remove = async (req, res) => {
     let group = req.group;
     let deleteGroup = await group.remove();
     res.json(deleteGroup);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) })
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) })
   }
 };
 
@@ -138,10 +138,10 @@ const isModerator = (req, res, next) => {
 };
 
 const listByModerator = (req, res) => {
-  Group.find({ moderator: req.profile._id }, (err, groups) => {
-    if (err) {
+  Group.find({ moderator: req.profile._id }, (error, groups) => {
+    if (error) {
       return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
+        error: errorHandler.getErrorMessage(error)
       });
     }
     res.json(groups);
@@ -149,9 +149,9 @@ const listByModerator = (req, res) => {
 };
 
 const listPublished = (_req, res) => {
-  Group.find({ published: true }, (err, groups) => {
-    if (err) {
-      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  Group.find({ published: true }, (error, groups) => {
+    if (error) {
+      return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
     }
     res.json(groups);
   }).populate('instructor', '_id name');
@@ -173,9 +173,9 @@ const listCategories = async (_req, res) => {
   try {
     let groups = await Group.distinct('category', {});
     res.json(groups);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -193,9 +193,9 @@ const listSearch = async (req, res) => {
   try {
     let groups = await Group.find(query).populate('group', '_id name').select('-image').exec();
     res.json(groups);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 

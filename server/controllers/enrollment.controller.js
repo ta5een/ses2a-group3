@@ -16,9 +16,9 @@ const create = async (req, res) => {
   try {
     let result = await enrollment.save();
     return res.status(200).json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -37,8 +37,8 @@ const enrollmentByID = async (req, res, next, id) => {
 
     req.enrollment = enrollment;
     next();
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
     return res.status('400').json({ error: 'Could not retrieve enrollment' });
   }
 };
@@ -62,9 +62,9 @@ const complete = async (req, res) => {
       { $set: updatedData }
     );
     res.json(enrollment);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -73,9 +73,9 @@ const remove = async (req, res) => {
     let enrollment = req.enrollment;
     let deletedEnrollment = await enrollment.remove();
     res.json(deletedEnrollment);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -98,10 +98,10 @@ const listEnrolled = async (req, res) => {
       .populate('group', '_id name category');
 
     res.json(enrollments);
-  } catch (err) {
-    console.error(`An error occurred: ${err}`);
+  } catch (error) {
+    console.error(`An error occurred: ${error}`);
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
+      error: errorHandler.getErrorMessage(error)
     });
   }
 };
@@ -118,9 +118,9 @@ const findEnrollment = async (req, res, next) => {
     } else {
       res.json(enrollments[0]);
     }
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -140,9 +140,9 @@ const enrollmentStats = async (req, res) => {
         .countDocuments();
 
     res.json(stats);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 

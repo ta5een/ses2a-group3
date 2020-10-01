@@ -6,8 +6,8 @@ import Post from '../models/post.model';
 const create = (req, res, _next) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
+  form.parse(req, async (error, fields, files) => {
+    if (error) {
       return res.status(400).json({ error: 'Image could not be uploaded' });
     }
 
@@ -22,9 +22,9 @@ const create = (req, res, _next) => {
     try {
       let result = await post.save();
       res.json(result);
-    } catch (err) {
-      console.error(`A server error occurred: ${err}`);
-      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    } catch (error) {
+      console.error(`A server error occurred: ${error}`);
+      return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
     }
   });
 };
@@ -40,8 +40,8 @@ const postByID = async (req, res, next, id) => {
 
     req.post = post;
     next();
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
     return res.status('400').json({ error: 'Could not retrieve use post' });
   }
 };
@@ -56,9 +56,9 @@ const listByUser = async (req, res) => {
         .exec();
 
     res.json(posts);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -75,9 +75,9 @@ const listNewsFeed = async (req, res) => {
         .exec();
 
     res.json(posts);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -86,9 +86,9 @@ const remove = async (req, res) => {
   try {
     let deletedPost = await post.remove();
     res.json(deletedPost);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -105,9 +105,9 @@ const like = async (req, res) => {
       { new: true }
     );
     res.json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -119,9 +119,9 @@ const unlike = async (req, res) => {
       { new: true }
     );
     res.json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
@@ -140,9 +140,9 @@ const comment = async (req, res) => {
       .exec();
 
     res.json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 const uncomment = async (req, res) => {
@@ -159,9 +159,9 @@ const uncomment = async (req, res) => {
       .exec();
 
     res.json(result);
-  } catch (err) {
-    console.error(`A server error occurred: ${err}`);
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+  } catch (error) {
+    console.error(`A server error occurred: ${error}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
   }
 };
 
