@@ -10,6 +10,7 @@ const create = async (req, res) => {
       message: 'Successfully signed up!'
     });
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -32,6 +33,7 @@ const userByID = async (req, res, next, id) => {
     req.profile = user;
     next();
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status('400').json({ error: 'Could not retrieve user' });
   }
 };
@@ -47,6 +49,7 @@ const list = async (req, res) => {
     let users = await User.find().select('name email updated created');
     res.json(users);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -61,6 +64,7 @@ const update = async (req, res) => {
     user.salt = undefined;
     res.json(user);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -73,6 +77,7 @@ const remove = async (req, res) => {
     deletedUser.salt = undefined;
     res.json(deletedUser);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -102,6 +107,7 @@ const addFollowing = async (req, res, next) => {
     await User.findByIdAndUpdate(req.body.userId, { $push: { following: req.body.followId } });
     next();
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -122,9 +128,8 @@ const addFollower = async (req, res) => {
     result.salt = undefined;
     res.json(result);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -135,6 +140,7 @@ const removeFollowing = async (req, res, next) => {
     });
     next();
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -154,6 +160,7 @@ const removeFollower = async (req, res) => {
     result.salt = undefined;
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -166,6 +173,7 @@ const findPeople = async (req, res) => {
     let users = await User.find({ _id: { $nin: following } }).select('name');
     res.json(users);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -175,9 +183,8 @@ const listInterests = async (_req, res) => {
     let users = await User.distinct('interest', {});
     res.json(users);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 

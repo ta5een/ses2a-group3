@@ -35,6 +35,7 @@ const signin = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status('401').json({ error: 'Could not sign in' });
   }
 };

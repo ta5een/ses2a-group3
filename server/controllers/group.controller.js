@@ -25,6 +25,7 @@ const create = (req, res) => {
       let result = await group.save();
       res.json(result);
     } catch (err) {
+      console.error(`A server error occurred: ${err}`);
       return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
     }
   });
@@ -58,6 +59,7 @@ const list = async (_req, res) => {
     let groups = await Group.find().select('name email updated created');
     res.json(groups);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -90,9 +92,8 @@ const update = async (req, res) => {
       await group.save();
       res.json(group);
     } catch (err) {
-      return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
-      });
+      console.error(`A server error occurred: ${err}`);
+      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
     }
   });
 };
@@ -107,11 +108,12 @@ const newContent = async (req, res) => {
         { $push: { contents: content }, updated: Date.now() },
         { new: true }
       )
-      .populate('moderator', '_id name')
-      .exec();
+        .populate('moderator', '_id name')
+        .exec();
 
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -122,9 +124,8 @@ const remove = async (req, res) => {
     let deleteGroup = await group.remove();
     res.json(deleteGroup);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) })
   }
 };
 
@@ -173,6 +174,7 @@ const listCategories = async (_req, res) => {
     let groups = await Group.distinct('category', {});
     res.json(groups);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -192,9 +194,8 @@ const listSearch = async (req, res) => {
     let groups = await Group.find(query).populate('group', '_id name').select('-image').exec();
     res.json(groups);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 

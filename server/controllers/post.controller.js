@@ -23,9 +23,8 @@ const create = (req, res, _next) => {
       let result = await post.save();
       res.json(result);
     } catch (err) {
-      return res.status(400).json({
-        error: errorHandler.getErrorMessage(err)
-      });
+      console.error(`A server error occurred: ${err}`);
+      return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
     }
   });
 };
@@ -33,7 +32,7 @@ const create = (req, res, _next) => {
 const postByID = async (req, res, next, id) => {
   try {
     let post = await Post.findById(id).populate('postedBy', '_id name').exec();
-     if (!post) {
+    if (!post) {
       return res.status('400').json({
         error: 'Post not found'
       });
@@ -42,9 +41,8 @@ const postByID = async (req, res, next, id) => {
     req.post = post;
     next();
   } catch (err) {
-    return res.status('400').json({
-      error: 'Could not retrieve use post'
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status('400').json({ error: 'Could not retrieve use post' });
   }
 };
 
@@ -59,6 +57,7 @@ const listByUser = async (req, res) => {
 
     res.json(posts);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -77,6 +76,7 @@ const listNewsFeed = async (req, res) => {
 
     res.json(posts);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -87,9 +87,8 @@ const remove = async (req, res) => {
     let deletedPost = await post.remove();
     res.json(deletedPost);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -107,6 +106,7 @@ const like = async (req, res) => {
     );
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -120,6 +120,7 @@ const unlike = async (req, res) => {
     );
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -140,6 +141,7 @@ const comment = async (req, res) => {
 
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
@@ -147,7 +149,7 @@ const uncomment = async (req, res) => {
   let comment = req.body.comment;
   try {
     let result =
-    await Post.findByIdAndUpdate(
+      await Post.findByIdAndUpdate(
         req.body.postId,
         { $pull: { comments: { _id: comment._id } } },
         { new: true }
@@ -155,8 +157,10 @@ const uncomment = async (req, res) => {
       .populate('comments.postedBy', '_id name')
       .populate('postedBy', '_id name')
       .exec();
+
     res.json(result);
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };

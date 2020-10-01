@@ -17,9 +17,8 @@ const create = async (req, res) => {
     let result = await enrollment.save();
     return res.status(200).json(result);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -39,6 +38,7 @@ const enrollmentByID = async (req, res, next, id) => {
     req.enrollment = enrollment;
     next();
   } catch (err) {
+    console.error(`A server error occurred: ${err}`);
     return res.status('400').json({ error: 'Could not retrieve enrollment' });
   }
 };
@@ -63,9 +63,8 @@ const complete = async (req, res) => {
     );
     res.json(enrollment);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -75,9 +74,8 @@ const remove = async (req, res) => {
     let deletedEnrollment = await enrollment.remove();
     res.json(deletedEnrollment);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -121,9 +119,8 @@ const findEnrollment = async (req, res, next) => {
       res.json(enrollments[0]);
     }
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
@@ -142,11 +139,10 @@ const enrollmentStats = async (req, res) => {
         .exists('completed', true)
         .countDocuments();
 
-      res.json(stats);
+    res.json(stats);
   } catch (err) {
-    return res.status(400).json({
-      error: errorHandler.getErrorMessage(err)
-    });
+    console.error(`A server error occurred: ${err}`);
+    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
   }
 };
 
