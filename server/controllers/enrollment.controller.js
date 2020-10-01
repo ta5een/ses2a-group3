@@ -32,14 +32,16 @@ const enrollmentByID = async (req, res, next, id) => {
       .populate({ path: 'group', populate: { path: 'moderator' } })
       .populate('member', '_id name');
 
-    if (!enrollment) {
-      return res.status('400').json({ error: 'Enrollment not found' });
-    }
-
+    if (!enrollment)
+      return res.status('400').json({
+        error: 'Enrollment not found'
+      });
     req.enrollment = enrollment;
     next();
   } catch (err) {
-    return res.status('400').json({ error: 'Could not retrieve enrollment' });
+    return res.status('400').json({
+      error: 'Could not retrieve enrollment'
+    });
   }
 };
 
@@ -51,10 +53,7 @@ const complete = async (req, res) => {
   let updatedData = {};
   updatedData['contentStatus.$.complete'] = req.body.complete;
   updatedData.updated = Date.now();
-
-  if (req.body.groupCompleted) {
-    updatedData.completed = req.body.groupCompleted;
-  }
+  if (req.body.groupCompleted) updatedData.completed = req.body.groupCompleted;
 
   try {
     let enrollment = await Enrollment.updateOne(
@@ -83,13 +82,11 @@ const remove = async (req, res) => {
 
 const isMember = (req, res, next) => {
   const isMember = req.auth && req.auth._id == req.enrollment.member._id;
-
   if (!isMember) {
     return res.status('403').json({
       error: 'User is not enrolled'
     });
   }
-
   next();
 };
 
@@ -98,10 +95,9 @@ const listEnrolled = async (req, res) => {
     let enrollments = await Enrollment.find({ member: req.auth._id })
       .sort({ completed: 1 })
       .populate('group', '_id name category');
-
     res.json(enrollments);
   } catch (err) {
-    console.error(`An error occurred: ${err}`);
+    console.log(err);
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
     });
@@ -110,11 +106,7 @@ const listEnrolled = async (req, res) => {
 
 const findEnrollment = async (req, res, next) => {
   try {
-    let enrollments = await Enrollment.find({
-      group: req.group._id,
-      member: req.auth._id
-    });
-
+    let enrollments = await Enrollment.find({ group: req.group._id, member: req.auth._id });
     if (enrollments.length == 0) {
       next();
     } else {
@@ -130,19 +122,11 @@ const findEnrollment = async (req, res, next) => {
 const enrollmentStats = async (req, res) => {
   try {
     let stats = {};
-
-    stats.totalEnrolled =
-      await Enrollment
-        .find({ group: req.group._id })
-        .countDocuments();
-
-    stats.totalCompleted =
-      await Enrollment
-        .find({ group: req.group._id })
-        .exists('completed', true)
-        .countDocuments();
-
-      res.json(stats);
+    stats.totalEnrolled = await Enrollment.find({ group: req.group._id }).countDocuments();
+    stats.totalCompleted = await Enrollment.find({ group: req.group._id })
+      .exists('completed', true)
+      .countDocuments();
+    res.json(stats);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)

@@ -1,52 +1,59 @@
-import bodyParser from 'body-parser';
-import compress from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import express from 'express';
-import helmet from 'helmet';
 import path from 'path';
-import routes from './routes';
-import template from '../template';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compress from 'compression';
+import cors from 'cors';
+import helmet from 'helmet';
+import Template from './../template';
+import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth.routes';
+import postRoutes from './routes/post.routes';
+import groupRoutes from './routes/group.routes';
+import enrollmentRoutes from './routes/enrollment.routes';
 
-// Modules for server-side rendering
-import MainRouter from '../client/MainRouter';
+// modules for server side rendering
 import React from 'react';
-import ReactDomServer from 'react-dom/server';
-import theme from '../client/theme';
+import ReactDOMServer from 'react-dom/server';
+import MainRouter from './../client/MainRouter';
 import { StaticRouter } from 'react-router-dom';
-import { ServerStyleSheets, ThemeProvider } from '@material-ui/core';
 
-// Comment out before building for production
+import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles';
+import theme from './../client/theme';
+//end
+
+//comment out before building for production
 import devBundle from './devBundle';
 
 const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
 
-// Comment out before building for production
+//comment out before building for production
 devBundle.compile(app);
 
-// Parse body params and attache them to req.body
+// parse body params and attache them to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
+// secure apps by setting various HTTP headers
+app.use(helmet());
+// enable CORS - Cross Origin Resource Sharing
+app.use(cors());
 
-app.use(helmet()); // Secure apps by setting various HTTP headers
-app.use(cors()); // Enable CORS - Cross Origin Resource Sharing
 app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')));
 
-// Mount routes
-app.use('/', routes.authRoutes);
-app.use('/', routes.enrollmentRoutes);
-app.use('/', routes.groupRoutes);
-app.use('/', routes.postRoutes);
-app.use('/', routes.userRoutes);
+// mount routes
+app.use('/', userRoutes);
+app.use('/', authRoutes);
+app.use('/', postRoutes);
+app.use('/', groupRoutes);
+app.use('/', enrollmentRoutes);
 
 app.get('*', (req, res) => {
   const sheets = new ServerStyleSheets();
   const context = {};
-
-  const markup = ReactDomServer.renderToString(
+  const markup = ReactDOMServer.renderToString(
     sheets.collect(
       <StaticRouter location={req.url} context={context}>
         <ThemeProvider theme={theme}>
@@ -55,21 +62,24 @@ app.get('*', (req, res) => {
       </StaticRouter>
     )
   );
-
   if (context.url) {
     return res.redirect(303, context.url);
   }
-
   const css = sheets.toString();
-  res.status(200).send(template(markup, css));
+  res.status(200).send(
+    Template({
+      markup: markup,
+      css: css
+    })
+  );
 });
 
 // Catch unauthorised errors
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
-    res.status(401).json({ error: `${err.name}: ${err.message}` });
+    res.status(401).json({ error: err.name + ': ' + err.message });
   } else if (err) {
-    res.status(400).json({ error: `${err.name}: ${err.message}` });
+    res.status(400).json({ error: err.name + ': ' + err.message });
     console.log(err);
   }
 });
