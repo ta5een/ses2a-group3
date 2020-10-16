@@ -1,0 +1,9 @@
+@import "./styles/spacing";
+
+.header {
+  padding-bottom: $spacing-07 * 4;
+}
+
+.header__intention {
+  padding-top: $spacing-05;
+}

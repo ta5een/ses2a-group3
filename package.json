@@ -1,48 +1,16 @@
 {
-  "name": "ses2a",
-  "version": "0.1.0",
-  "author": "SES2A Group 3",
-  "license": "MIT",
-  "main": "./dist/server.generated.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "development": "nodemon",
-    "build": "webpack --config webpack.config.client.production.js && webpack --mode=production --config webpack.config.server.js",
-    "start": "NODE_ENV=production node ./dist/server.generated.js",
-    "build-start": "yarn build && yarn start"
+    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "client": "yarn workspace @meet-point/client start",
+    "server": "yarn workspace @meet-point/server start",
+    "build": "yarn workspace @meet-point/client build",
+    "test": "yarn workspace @meet-point/client test"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-react": "^7.10.4",
-    "babel-loader": "^8.1.0",
-    "file-loader": "^6.1.0",
-    "nodemon": "^2.0.4",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-middleware": "^3.7.2",
-    "webpack-hot-middleware": "^2.25.0",
-    "webpack-node-externals": "^2.5.2"
-  },
-  "dependencies": {
-    "@hot-loader/react-dom": "^17.0.0-rc.2",
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "body-parser": "^1.19.0",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-jwt": "^6.0.0",
-    "formidable": "^1.2.2",
-    "global": "^4.4.0",
-    "helmet": "^4.1.1",
-    "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.20",
-    "mongoose": "^5.10.7",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.13.0",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "concurrently": "^5.3.0"
   }
 }

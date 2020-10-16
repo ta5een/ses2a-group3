@@ -1,0 +1,41 @@
+h3 {
+  margin-bottom: 4px;
+}
+
+p {
+  font-size: 0.875rem;
+  color: var(--cds-text-02, #525252);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--cds-ui-03, #e0e0e0);
+  margin-bottom: 16px;
+}
+
+.form {
+  margin: 40px auto;
+  max-width: 450px;
+  padding: 0;
+}
+
+.form-content {
+  padding: 16px 16px 40px 16px;
+}
+
+.form-header {
+  margin-bottom: 48px;
+}
+
+.form-header-error {
+  margin-bottom: 16px;
+}
+
+.form-body-element {
+  margin-bottom: 16px;
+}
+
+.form-footer {
+  display: flex;
+  flex-direction: row-reverse;
+}

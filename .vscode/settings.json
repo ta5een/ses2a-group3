@@ -1,9 +1,5 @@
 {
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "files.insertFinalNewline": true,
-  "files.exclude": {
-    "**/.DS_Store": true,
-    "node_modules": true,
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.prettierPath": "node_modules/prettier",
+  "editor.formatOnSave": true
 }

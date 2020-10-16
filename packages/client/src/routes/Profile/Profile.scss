@@ -1,0 +1,16 @@
+.profile-page {
+  margin: auto /* 200px */;
+}
+
+.profile-page__container {
+  display: flex;
+}
+
+.profile-page__container-left {
+  background-color: red;
+}
+
+.profile-page__container-right {
+  flex-grow: 2;
+  background-color: blue;
+}
