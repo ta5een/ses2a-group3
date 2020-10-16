@@ -5,13 +5,19 @@ root = true
 [*]
 end_of_line = lf
 insert_final_newline = true
+charset = utf-8
 
-# Indentation settings for Javascript files
-[*.{js,jsx,ts,tsx}]
+# Indentation settings for JSON files
+[*.json]
 indent_style = space
 indent_size = 2
 
-# Indentation settings for JSON files
-[*.{json}]
+# Indentation settings for Javascript files
+[*.{js,ts,jsx,tsx}]
+indent_style = space
+indent_size = 2
+
+# Indentation settings for Svelte and HTML files
+[*.{svelte,html}]
 indent_style = space
 indent_size = 2
