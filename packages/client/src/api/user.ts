@@ -35,6 +35,7 @@ export type ReadUserResult = {
   name: string;
   email: string;
   created: string;
+  interests: string[];
 };
 
 export async function readUser(
@@ -42,7 +43,7 @@ export async function readUser(
 ): Promise<ReadUserResult> {
   try {
     const response = await fetch(`/api/users/${params._id}`, {
-      method: "POST",
+      method: "GET",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

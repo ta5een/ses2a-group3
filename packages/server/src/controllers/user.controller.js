@@ -17,21 +17,17 @@ async function createUser(req, res) {
   } catch (error) {
     const { code, keyValue } = error;
     if (code === 10000 || (code === 11000 && keyValue.email)) {
-      res
-        .status(401)
-        .json({
-          message:
-            "An account with the email you provided is taken. Please use an alternative email address.",
-          error,
-        });
+      res.status(401).json({
+        message:
+          "An account with the email you provided is taken. Please use an alternative email address.",
+        error,
+      });
     } else {
-      res
-        .status(500)
-        .json({
-          message:
-            "There was an error creating your account. Please try again later.",
-          error,
-        });
+      res.status(500).json({
+        message:
+          "There was an error creating your account. Please try again later.",
+        error,
+      });
     }
   }
 }
@@ -39,8 +35,15 @@ async function createUser(req, res) {
 async function readUser(req, res) {
   try {
     const { id } = req.params;
-    const { _id, admin, name, email, created } = await User.findById(id);
-    res.status(200).json({ _id, admin, name, email, created });
+    const user = await User.findById(id);
+    res.status(200).json({
+      _id: user._id,
+      admin: user.admin,
+      name: user.name,
+      email: user.email,
+      created: user.created,
+      interests: user.interests,
+    });
   } catch (error) {
     res
       .status(500)

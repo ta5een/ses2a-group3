@@ -1,16 +1,107 @@
+$breakpoint-md: 720px;
+$breakpoint-lg: 1000px;
+
+$avatar-width-sm: 250px;
+$avatar-width-md: 200px;
+$avatar-width-lg: 280px;
+
 .profile-page {
-  margin: auto /* 200px */;
+  margin: auto calc(min(10%, 45px));
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+
+  @media only screen and (max-width: $breakpoint-md) {
+    margin: auto;
+  }
+
+  @media only screen and (min-width: $breakpoint-lg) {
+    margin: auto calc(min(20%, 125px));
+  }
 }
 
 .profile-page__container {
   display: flex;
+  flex-direction: row;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    flex-direction: column;
+  }
+
+  @media only screen and (min-width: $breakpoint-lg) {
+    flex-direction: row;
+  }
 }
 
 .profile-page__container-left {
-  background-color: red;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  padding: 20px 50px;
+}
+
+.profile-page__actions {
+  margin-top: 20px;
+
+  *:not(:last-child) {
+    margin-right: 8px;
+  }
+}
+
+.profile-page__avatar-container {
+  width: $avatar-width-md;
+  height: $avatar-width-md;
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    width: $avatar-width-sm;
+    height: $avatar-width-sm;
+  }
+
+  @media only screen and (min-width: $breakpoint-lg) {
+    width: $avatar-width-lg;
+    height: $avatar-width-lg;
+  }
+}
+
+.profile-page__avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  width: inherit;
+  height: inherit;
+}
+
+.profile-page__avatar-skeleton {
+  width: $avatar-width-md;
+  height: $avatar-width-md;
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    width: $avatar-width-sm;
+    height: $avatar-width-sm;
+  }
+
+  @media only screen and (min-width: $breakpoint-lg) {
+    width: $avatar-width-lg;
+    height: $avatar-width-lg;
+  }
 }
 
 .profile-page__container-right {
-  flex-grow: 2;
-  background-color: blue;
+  padding: 20px;
+}
+
+.profile-page__container-right__tags {
+  @media only screen and (max-width: $breakpoint-md) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
