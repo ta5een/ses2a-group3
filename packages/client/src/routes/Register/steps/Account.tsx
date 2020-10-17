@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 
 import RegistrationContext, {
   CurrentProgress,
-} from "../../../context/register-context";
-import { Form } from "../../../components";
+} from "context/register-context";
+import { Form } from "components";
 import validator, { Validity, Validations } from "../../utils/validator";
 import { TextInput } from "carbon-components-react";
 

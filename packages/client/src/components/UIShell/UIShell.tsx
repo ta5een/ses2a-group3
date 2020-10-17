@@ -24,10 +24,10 @@ import {
   UserFollow20,
 } from "@carbon/icons-react";
 
-import AuthApi, { Authentication } from "../../api/auth";
+import AuthApi, { Authentication } from "api/auth";
 
 type UIShellProps = {
-  authentication: Authentication,
+  authentication: Authentication;
   children?: JSX.Element;
 };
 

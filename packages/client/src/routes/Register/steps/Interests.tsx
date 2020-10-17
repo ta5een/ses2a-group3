@@ -1,11 +1,16 @@
-import React, { useContext, useState } from "react";
-import { Button, FormLabel, Search, Tag } from "carbon-components-react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Button,
+  FormLabel,
+  Search,
+  Tag,
+  TagSkeleton,
+} from "carbon-components-react";
 import { Add16 } from "@carbon/icons-react";
 
-import RegistrationContext, {
-  CurrentProgress,
-} from "../../../context/register-context";
-import { Form } from "../../../components";
+import RegistrationContext, { CurrentProgress } from "context/register-context";
+import { InterestApi } from "api";
+import { Form } from "components";
 
 type InterestsProps = {
   interests: string[];
@@ -14,9 +19,30 @@ type InterestsProps = {
 const Interests = (oldState: InterestsProps) => {
   const context = useContext(RegistrationContext);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [interests, _setInterests] = useState(oldState.interests);
+  const [interests, _setInterests] = useState(oldState.interests || [
+    "C++",
+    "Games Development",
+    "JavaScript",
+    "Web Programming",
+  ]);
   const setInterests = (interests: string[]) => _setInterests(interests.sort());
+
+  useEffect(() => {
+    const fetchAndSetInterests = async () => {
+      try {
+        const allInterests = await InterestApi.allInterests();
+        const interests = allInterests.map(interest => interest.name);
+        setIsLoading(false);
+        _setInterests(interests);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAndSetInterests();
+  }, [setIsLoading, _setInterests]);
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -44,7 +70,7 @@ const Interests = (oldState: InterestsProps) => {
       title="Interests"
       caption="Add some topics that interest you"
       submitButtonText="Continue"
-      canSubmit={true}
+      canSubmit={!isLoading && interests && interests.length >= 3}
       showPreviousButton={true}
       onSubmit={handleContinue}
       onPrevious={handlePrevious}>
@@ -74,7 +100,11 @@ const Interests = (oldState: InterestsProps) => {
             flexWrap: "wrap",
             justifyContent: "center",
           }}>
-          {interests.map((interest, i) => (
+          {isLoading ? (
+            [...Array(5).keys()].map((_, i) => (
+              <TagSkeleton key={i} />
+            ))
+          ) : interests.map((interest, i) => (
             <Tag
               key={i}
               filter

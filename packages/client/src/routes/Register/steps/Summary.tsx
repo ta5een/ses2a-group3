@@ -3,9 +3,9 @@ import { Tag } from "carbon-components-react";
 
 import RegistrationContext, {
   CurrentProgress,
-} from "../../../context/register-context";
-import { AuthApi, UserApi, InterestApi } from "../../../api";
-import { Form } from "../../../components";
+} from "context/register-context";
+import { AuthApi, UserApi, InterestApi } from "api";
+import { Form } from "components";
 import "./Summary.scss";
 
 const Summary = () => {
@@ -36,16 +36,21 @@ const Summary = () => {
 
     try {
       const { _id: appendedUser } = await UserApi.createUser(user);
+      const selectedInterests = details.interests;
       const allInterests = await InterestApi.allInterests();
-      const existingInterests = allInterests.map(interest => interest.name);
+      const allInterestsNames = allInterests.map(interest => interest.name);
 
-      const existingInterestIds = allInterests
-        .filter(interest => existingInterests.includes(interest.name))
-        .map(interest => interest._id);
+      // Update existing interests
+      allInterests
+        .filter(interest => selectedInterests.includes(interest.name))
+        .forEach(async interest => {
+          await InterestApi.updateInterest({ _id: interest._id, appendedUser });
+        });
 
-      const newInterestIds = details.interests
-        .filter(interest => !existingInterests.includes(interest))
-        .map(async newInterest => {
+      // Create new interests
+      selectedInterests
+        .filter(interest => !allInterestsNames.includes(interest))
+        .forEach(async newInterest => {
           const params = { name: newInterest, appendedUser };
           const { _id: interestId } = await InterestApi.createInterest(params);
           return interestId;
@@ -59,7 +64,6 @@ const Summary = () => {
         context.setRedirectToReferrer(true);
       });
     } catch (error) {
-      console.error(error);
       setIsLoading(false);
       setOutcome({ didFail: true, message: error.message });
     }

@@ -3,8 +3,8 @@ import { FileUploader } from "carbon-components-react";
 
 import RegistrationContext, {
   CurrentProgress,
-} from "../../../context/register-context";
-import { Form } from "../../../components";
+} from "context/register-context";
+import { Form } from "components";
 
 const Personalization = () => {
   const context = useContext(RegistrationContext);

@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthApi } from "../../api";
+import { AuthApi } from "api";
 
 const Home = () => {
   const authentication = AuthApi.authentication();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { InlineNotification } from "carbon-components-react";
 
-import { AuthApi, UserApi } from "../../api";
+import { AuthApi, UserApi } from "api";
 import "./Profile.scss";
 
 type ProfileDetails = {

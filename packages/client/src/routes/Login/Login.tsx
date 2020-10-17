@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, Redirect } from "react-router-dom";
 import { Checkbox, TextInput } from "carbon-components-react";
 
-import { AuthApi } from "../../api";
-import { Form } from "../../components";
+import { AuthApi } from "api";
+import { Form } from "components";
 import validator, { Validity, Validations } from "../utils/validator";
 
 export type LoginForm = Record<LoginFormInput, string>;

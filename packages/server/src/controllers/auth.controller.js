@@ -6,7 +6,7 @@ const { User } = require("../models");
 async function signIn(req, res) {
   try {
     const user = await User.findOne({ email: req.body.email });
-    
+
     if (!user) {
       res.status(401).json({ message: "No user found with the given email" });
     } else if (!user.authenticate(req.body.password)) {
@@ -15,14 +15,9 @@ async function signIn(req, res) {
       const token = jwt.sign({ _id: user._id }, jwtSecret);
       res.cookie("t", token, { expire: new Date() + 9999 });
 
-      res.status(200).json({
-        token,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-      });
+      res
+        .status(200)
+        .json({ token, _id: user._id, name: user.name, email: user.email });
     }
   } catch (error) {
     res.status(400).json({ error, message: "Failed to sign in" });
