@@ -39,6 +39,7 @@ const UserSchema = Schema({
     type: String,
     trim: true,
   },
+  interests: [{ type: Schema.Types.ObjectId, ref: "Interest" }],
 });
 
 UserSchema.virtual("plainTextPassword").set(function (newPassword) {

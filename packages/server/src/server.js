@@ -30,6 +30,7 @@ mongoose
 
 app.use("/api/auth", routes.auth);
 app.use("/api/users", routes.user);
+app.use("/api/interests", routes.interest);
 
 app.get("*", (req, res) => {
   console.log(req.body);
