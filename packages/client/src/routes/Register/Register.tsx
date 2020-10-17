@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Redirect } from "react-router-dom";
 
-// import { AuthApi, UserApi } from "../../api";
 import RegistrationContext, {
   CurrentProgress,
   RegistrationDetails,
@@ -20,12 +19,14 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
   const location = useLocation<{ from: { pathname: string } }>();
   const { from } = location.state || { from: { pathname: "/" } };
 
-  const [progress, _setCurrentProgress] = useState(CurrentProgress.ACCOUNT);
-  const [details, _setRegistrationDetails] = useState<RegistrationDetails>({});
-
-  const setCurrentProgress = (progress: CurrentProgress) => {
-    _setCurrentProgress(progress);
-  };
+  const [progress, setCurrentProgress] = useState(CurrentProgress.ACCOUNT);
+  const [details, _setRegistrationDetails] = useState<RegistrationDetails>({
+    name: "John Smith",
+    email: "john.smith@email.com",
+    password: "my-secret-password-123",
+    confirmPassword: "my-secret-password-123",
+  });
+  const [redirect, setRedirectToReferrer] = useState(false);
 
   const setRegistrationDetails = (newDetails: RegistrationDetails) => {
     _setRegistrationDetails({ ...details, ...newDetails });
@@ -53,16 +54,12 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
     }
   };
 
-  // type Outcome = { didFail: boolean; message?: string };
-  // const [outcome, setOutcome] = useState<Outcome>({ didFail: false });
-  const [redirectToReferrer /* setRedirectToReferrer */] = useState(false);
-
-  // Update header to display user actions if successfully signed in
+  // Update header to display user actions if successfully registered
   useEffect(() => {
-    return setIsSignedIn(redirectToReferrer);
-  }, [setIsSignedIn, redirectToReferrer]);
+    return setIsSignedIn(redirect);
+  }, [setIsSignedIn, redirect]);
 
-  if (redirectToReferrer) {
+  if (redirect) {
     return <Redirect to={from} />;
   }
 
@@ -71,8 +68,10 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
       value={{
         currentProgress: progress,
         registrationDetails: details,
+        redirectToReferrer: redirect,
         setCurrentProgress,
         setRegistrationDetails,
+        setRedirectToReferrer,
       }}>
       {currentComponent()}
     </RegistrationContext.Provider>

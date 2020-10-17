@@ -5,6 +5,7 @@ async function allInterests(_, res) {
     const interests = await Interest.find();
     res.status(200).json(interests);
   } catch (error) {
+    console.error(error);
     res.status(400).json({ message: "Failed to retrieve interests", error });
   }
 }
@@ -13,12 +14,23 @@ async function createInterest(req, res) {
   try {
     const interest = new Interest(req.body);
     const newInterest = await interest.save();
+
+    for (const userId of interest.users) {
+      const user = await User.findById(userId);
+      user.interests.push(interest._id);
+      user.lastUpdated = new Date();
+      user.save();
+    }
+
     res.status(200).json(newInterest);
   } catch (error) {
-    if (error.error?.code === 10000 || 11000) {
-      res
-        .status(500)
-        .json({ message: "An interest with that name already exists", error });
+    console.error(error);
+    const { code, keyValue } = error;
+    if (code === 10000 || (code === 11000 && keyValue.name)) {
+      res.status(401).json({
+        message: "An interest with that name already exists",
+        error,
+      });
     } else {
       res.status(500).json({ message: "Failed to create interest", error });
     }
@@ -31,6 +43,7 @@ async function readInterest(req, res) {
     const { _id, name, users } = await Interest.findById(id);
     res.status(200).json({ _id, name, users });
   } catch (error) {
+    console.error(error);
     res
       .status(500)
       .json({ message: "Failed to get interest with given ID", error });
@@ -53,6 +66,7 @@ async function updateInterest(req, res) {
 
     res.status(200).json(updatedInterest);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to update interest", error });
   }
 }
@@ -63,6 +77,7 @@ async function deleteInterest(req, res) {
     const deletedInterest = await interest.remove();
     res.status(200).json(deletedInterest);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to delete interest", error });
   }
 }

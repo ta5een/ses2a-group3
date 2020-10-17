@@ -66,17 +66,16 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
   }, [setIsSignedIn, redirectToReferrer]);
 
   type Event = React.FormEvent<HTMLFormElement>;
-  type HandleLoginFn = (e: Event, loginDetails: AuthApi.LoginDetails) => void;
+  type HandleLoginFn = (e: Event, loginDetails: AuthApi.SignInParams) => void;
   const handleLogin: HandleLoginFn = async (e, loginDetails) => {
     e.preventDefault();
-    const response = await AuthApi.signIn(loginDetails);
-    if (response.type === "Success") {
-      setLoginOutcome({ didFail: false });
 
-      const { _id: id, token } = response.data;
-      AuthApi.authenticate({ id, token }, () => setRedirectToReferrer(true));
-    } else {
-      setLoginOutcome({ didFail: true, message: response.error });
+    try {
+      const { _id, token } = await AuthApi.signIn(loginDetails);
+      setLoginOutcome({ didFail: false });
+      AuthApi.authenticate({ _id, token }, () => setRedirectToReferrer(true));
+    } catch (error) {
+      setLoginOutcome({ didFail: true, message: error.message });
     }
   };
 

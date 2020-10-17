@@ -28,7 +28,7 @@ const Profile = ({ id }: ProfileProps) => {
 
   type Outcome = { didFail: boolean; message?: string };
   const [outcome, setOutcome] = useState<Outcome>({ didFail: false });
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [values, setValues] = useState<ProfileDetails>({
     name: "",
@@ -38,17 +38,18 @@ const Profile = ({ id }: ProfileProps) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await UserApi.readUser({ id, token });
-      if (response.type === "Success") {
+      try {
+        const readUserParams = { _id: id, token };
+        const { name, email, created } = await UserApi.readUser(readUserParams);
         setOutcome({ didFail: false });
-        const { name, email, created } = response.data;
         setValues({ name, email, created: new Date(created) });
-      } else {
-        setOutcome({ didFail: true, message: response.error });
+      } catch (error) {
+        setIsLoading(false);
+        setOutcome({ didFail: true, message: error.message });
       }
     };
 
-    fetchUser().then(_ => setLoading(false));
+    fetchUser().then(_ => setIsLoading(false));
   }, [id, token]);
 
   return (
@@ -62,7 +63,7 @@ const Profile = ({ id }: ProfileProps) => {
           subtitle={outcome.message || "An unknown error occurred"}
         />
       ) : (
-        <ProfileTile loading={loading} profileDetails={values} />
+        <ProfileTile loading={isLoading} profileDetails={values} />
       )}
     </div>
   );

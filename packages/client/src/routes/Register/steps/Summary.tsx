@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Tag } from "carbon-components-react";
 
 import RegistrationContext, {
   CurrentProgress,
 } from "../../../context/register-context";
+import { AuthApi, UserApi, InterestApi } from "../../../api";
 import { Form } from "../../../components";
 import "./Summary.scss";
 
@@ -11,13 +12,57 @@ const Summary = () => {
   const context = useContext(RegistrationContext);
   const registrationDetails = context.registrationDetails;
 
+  type Outcome = { didFail: boolean; message?: string };
+  const [outcome, setOutcome] = useState<Outcome>({ didFail: false });
+  const [isLoading, setIsLoading] = useState(false);
+
   const handlePrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     context.setCurrentProgress(CurrentProgress.INTERESTS);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setOutcome({ didFail: false, message: undefined });
+
+    const details = context.registrationDetails;
+    const user: UserApi.CreateUserParams = {
+      name: details.name,
+      email: details.email,
+      password: details.password,
+      interests: [],
+    };
+
+    try {
+      const { _id: appendedUser } = await UserApi.createUser(user);
+      const allInterests = await InterestApi.allInterests();
+      const existingInterests = allInterests.map(interest => interest.name);
+
+      const existingInterestIds = allInterests
+        .filter(interest => existingInterests.includes(interest.name))
+        .map(interest => interest._id);
+
+      const newInterestIds = details.interests
+        .filter(interest => !existingInterests.includes(interest))
+        .map(async newInterest => {
+          const params = { name: newInterest, appendedUser };
+          const { _id: interestId } = await InterestApi.createInterest(params);
+          return interestId;
+        });
+
+      const signInParams = { email: details.email, password: details.password };
+      const authenticateParams = await AuthApi.signIn(signInParams);
+      AuthApi.authenticate(authenticateParams, () => {
+        setOutcome({ didFail: false });
+        console.log(AuthApi.authentication());
+        context.setRedirectToReferrer(true);
+      });
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+      setOutcome({ didFail: true, message: error.message });
+    }
   };
 
   return (
@@ -27,7 +72,13 @@ const Summary = () => {
       submitButtonText="Create account"
       showPreviousButton={true}
       onSubmit={handleSubmit}
-      onPrevious={handlePrevious}>
+      canSubmit={true}
+      onPrevious={handlePrevious}
+      isError={outcome.didFail}
+      errorMessage={outcome.message}
+      showInlineLoading={isLoading}
+      inlineLoadingText="Creating account..."
+      isLoading={isLoading}>
       <table>
         <tbody>
           <tr>

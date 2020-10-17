@@ -30,7 +30,7 @@ const UserSchema = Schema({
   },
   hashedPassword: {
     type: String,
-    required: "Password is required",
+    required: "Hashed password is required",
   },
   salt: {
     type: String,
@@ -42,14 +42,14 @@ const UserSchema = Schema({
   interests: [{ type: Schema.Types.ObjectId, ref: "Interest" }],
 });
 
-UserSchema.virtual("plainTextPassword").set(function (newPassword) {
+UserSchema.virtual("password").set(function (newPassword) {
   this.salt = this.makeSalt();
   this.hashedPassword = this.encryptPassword(newPassword);
 });
 
 UserSchema.methods = {
-  authenticate: function (plainTextPassword) {
-    return this.hashedPassword === this.encryptPassword(plainTextPassword);
+  authenticate: function (password) {
+    return this.hashedPassword === this.encryptPassword(password);
   },
 
   makeSalt: function () {

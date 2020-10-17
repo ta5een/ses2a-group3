@@ -134,6 +134,7 @@ const Account = (oldState: AccountProps) => {
         id="password"
         labelText="Password"
         placeholder="Enter your password"
+        helperText="Passwords must have at least 8 characters"
         value={values.password}
         invalid={showErrors.password && !validation.password.isValid}
         invalidText={validation.password.error}

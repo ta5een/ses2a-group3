@@ -15,12 +15,23 @@ async function createUser(req, res) {
     const newUser = await user.save();
     res.status(200).json(newUser);
   } catch (error) {
-    if (error.error?.code === 10000 || 11000) {
+    const { code, keyValue } = error;
+    if (code === 10000 || (code === 11000 && keyValue.email)) {
+      res
+        .status(401)
+        .json({
+          message:
+            "An account with the email you provided is taken. Please use an alternative email address.",
+          error,
+        });
+    } else {
       res
         .status(500)
-        .json({ message: "A user with that email already exists", error });
-    } else {
-      res.status(500).json({ message: "Failed to create user", error });
+        .json({
+          message:
+            "There was an error creating your account. Please try again later.",
+          error,
+        });
     }
   }
 }

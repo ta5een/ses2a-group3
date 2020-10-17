@@ -3,6 +3,7 @@ import { ArrowRight16 } from "@carbon/icons-react";
 import {
   Button,
   Form as CarbonForm,
+  InlineLoading,
   InlineNotification,
   Tile,
 } from "carbon-components-react";
@@ -23,6 +24,9 @@ type FormProps = {
   onPrevious?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   isError?: boolean;
   errorMessage?: string;
+  isLoading?: boolean;
+  showInlineLoading?: boolean;
+  inlineLoadingText?: string;
   children?: React.ReactNode;
 };
 
@@ -38,6 +42,9 @@ const Form = (props: FormProps) => {
     onPrevious,
     isError,
     errorMessage,
+    isLoading,
+    showInlineLoading,
+    inlineLoadingText,
     children,
   } = props;
 
@@ -77,13 +84,21 @@ const Form = (props: FormProps) => {
           </div>
 
           <div className="form-footer">
-            <Button
-              type="submit"
-              renderIcon={ArrowRight16}
-              disabled={!canSubmit}
-              style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}>
-              {submitButtonText || "Continue"}
-            </Button>
+            {showInlineLoading && isLoading ? (
+              <InlineLoading
+                style={{ marginLeft: "1rem" }}
+                description={inlineLoadingText || "Loading..."}
+                status={"active"}
+              />
+            ) : (
+              <Button
+                type="submit"
+                renderIcon={ArrowRight16}
+                disabled={!canSubmit}
+                style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}>
+                {submitButtonText || "Continue"}
+              </Button>
+            )}
             {showPreviousButton && (
               <Button
                 kind="secondary"

@@ -19,15 +19,19 @@ export interface RegistrationDetails {
 export interface RegistrationContextProps {
   currentProgress: CurrentProgress;
   registrationDetails: RegistrationDetails;
+  redirectToReferrer: boolean;
   setCurrentProgress: (_: CurrentProgress) => void;
   setRegistrationDetails: (_: RegistrationDetails) => void;
+  setRedirectToReferrer: (_: boolean) => void;
 }
 
 const RegistrationContext = createContext<RegistrationContextProps>({
   currentProgress: CurrentProgress.ACCOUNT,
   registrationDetails: {},
+  redirectToReferrer: false,
   setCurrentProgress: _ => {},
   setRegistrationDetails: _ => {},
+  setRedirectToReferrer: _ => {},
 });
 
 export default RegistrationContext;

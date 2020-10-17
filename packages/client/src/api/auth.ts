@@ -1,12 +1,9 @@
-import { Outcome } from "./utils";
+import { handleResponse } from "./utils";
 
-export type LoginDetails = { email: string; password: string };
-export type LoginData = { _id: string; token: string };
-export type LoginResponse = Outcome<LoginData, string>;
+export type SignInParams = { email: string; password: string };
+export type SignInResult = { _id: string; token: string };
 
-export async function signIn(
-  loginDetails: LoginDetails
-): Promise<LoginResponse> {
+export async function signIn(params: SignInParams): Promise<SignInResult> {
   try {
     const response = await fetch("/api/auth/sign-in", {
       method: "POST",
@@ -15,54 +12,24 @@ export async function signIn(
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(loginDetails),
+      body: JSON.stringify(params),
     });
 
-    const statusCode = response.status.toString();
-    if (statusCode.startsWith("2")) {
-      const {
-        token,
-        user: { _id },
-      } = await response.json();
-      return { type: "Success", data: { _id, token } };
-    } else {
-      // TODO: Handle when user is not connected to the server/internet
-      let { message } = await response.json();
-      console.log(`An error occurred when signing in: ${message}`);
-
-      if (statusCode.startsWith("5")) {
-        return {
-          type: "Error",
-          error: "A server error occurred. Please try again later",
-        };
-      } else {
-        return {
-          type: "Error",
-          error: message || "Something unexpected happened. Please try again",
-        };
-      }
-    }
+    return await handleResponse<SignInResult>(response);
   } catch (error) {
-    console.error(`An error occurred when signing in: ${error}`);
-    return {
-      type: "Error",
-      error:
-        "We're having trouble signing you in. Please try again at a later time.",
-    };
+    console.error(error.message || error);
+    throw error;
   }
 }
 
-export type LogoutResponse = Outcome<void, string>;
+export type SignOutResponse = void;
 
-export async function signOut(): Promise<LogoutResponse> {
+export async function signOut(): Promise<SignOutResponse> {
   try {
-    let response = await fetch("/api/auth/sign-out", { method: "GET" });
-    const { message } = await response.json();
-    console.log(message);
-    return { type: "Success", data: null };
+    await fetch("/api/auth/sign-out", { method: "GET" });
   } catch (error) {
-    console.error(`Failed to log out: ${error}`);
-    return { type: "Error", error };
+    console.error(error.message || error);
+    throw error;
   }
 }
 
@@ -87,7 +54,7 @@ export function authentication(): Authentication {
   }
 }
 
-type AuthenticateParams = { id: string; token: string };
+type AuthenticateParams = { _id: string; token: string };
 
 export function authenticate(params: AuthenticateParams, callback: () => void) {
   if (typeof window === "undefined") {
@@ -95,7 +62,7 @@ export function authenticate(params: AuthenticateParams, callback: () => void) {
     return;
   }
 
-  sessionStorage.setItem("id", params.id);
+  sessionStorage.setItem("id", params._id);
   sessionStorage.setItem("jwt", params.token);
   callback();
 }
@@ -106,15 +73,15 @@ export async function clearJwt(callback: () => void) {
     return;
   }
 
+  sessionStorage.removeItem("id");
   sessionStorage.removeItem("jwt");
-  const response = await signOut();
 
-  if (response.type === "Success") {
+  try {
+    await signOut();
     document.cookie = "t=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     callback();
-  } else {
-    console.log(response.error);
-    return;
+  } catch (error) {
+    console.log(error.message || error);
   }
 }
 
