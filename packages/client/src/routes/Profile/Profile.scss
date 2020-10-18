@@ -6,19 +6,16 @@ $avatar-width-md: 200px;
 $avatar-width-lg: 280px;
 
 .profile-page {
-  margin: auto calc(min(10%, 45px));
+  margin: auto;
 
   h1 {
     font-size: 2rem;
   }
 
   h2 {
+    font-size: 1.5rem;
     margin-top: 20px;
     margin-bottom: 8px;
-  }
-
-  @media only screen and (max-width: $breakpoint-md) {
-    margin: auto;
   }
 
   @media only screen and (min-width: $breakpoint-lg) {
@@ -99,6 +96,10 @@ $avatar-width-lg: 280px;
 }
 
 .profile-page__container-right__tags {
+  *:first-child {
+    margin-left: 0;
+  }
+
   @media only screen and (max-width: $breakpoint-md) {
     display: flex;
     flex-wrap: wrap;

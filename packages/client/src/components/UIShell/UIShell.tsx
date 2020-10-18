@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import {
   Header,
@@ -24,14 +24,16 @@ import {
   UserFollow20,
 } from "@carbon/icons-react";
 
-import AuthApi, { Authentication } from "api/auth";
+import { AuthApi } from "api";
+import { AuthContext } from "context";
 
 type UIShellProps = {
-  authentication: Authentication;
   children?: JSX.Element;
 };
 
-const UIShell = ({ authentication, children }: UIShellProps) => {
+const UIShell = ({ children }: UIShellProps) => {
+  const authContext = useContext(AuthContext);
+
   type GlobalAction =
     | "Help"
     | "Login"
@@ -51,10 +53,10 @@ const UIShell = ({ authentication, children }: UIShellProps) => {
         redirectTo("/login");
         break;
       case "Logout":
-        AuthApi.clearJwt(() => redirectTo("/"));
+        AuthApi.clearJwt(() => redirectTo("/logout"));
         break;
       case "Profile":
-        redirectTo(`/profile/${authentication.id}`);
+        redirectTo(`/profile/${authContext.authentication.id}`);
         break;
       case "Register":
         redirectTo("/register");
@@ -67,21 +69,6 @@ const UIShell = ({ authentication, children }: UIShellProps) => {
         break;
     }
   };
-
-  const MenuItems = () => (
-    <>
-      <HeaderMenuItem
-        isCurrentPage={window.location.pathname === "/feed"}
-        href="/feed">
-        My Feed
-      </HeaderMenuItem>
-      <HeaderMenuItem
-        isCurrentPage={window.location.pathname === "/groups"}
-        href="/groups">
-        My Groups
-      </HeaderMenuItem>
-    </>
-  );
 
   return (
     <HeaderContainer
@@ -101,7 +88,16 @@ const UIShell = ({ authentication, children }: UIShellProps) => {
 
             {/* Header Navigation Links */}
             <HeaderNavigation aria-label="Navigation">
-              <MenuItems />
+              <HeaderMenuItem
+                isCurrentPage={window.location.pathname === "/feed"}
+                href="/feed">
+                My Feed
+              </HeaderMenuItem>
+              <HeaderMenuItem
+                isCurrentPage={window.location.pathname === "/groups"}
+                href="/groups">
+                My Groups
+              </HeaderMenuItem>
             </HeaderNavigation>
 
             {/* Header Actions */}
@@ -111,7 +107,7 @@ const UIShell = ({ authentication, children }: UIShellProps) => {
                 onClick={_ => handleOnGlobalActionClick("Help")}>
                 <Help20 />
               </HeaderGlobalAction>
-              {authentication.isAuthenticated ? (
+              {authContext.authentication.isAuthenticated ? (
                 <>
                   <HeaderGlobalAction
                     aria-label="Settings"
@@ -152,7 +148,16 @@ const UIShell = ({ authentication, children }: UIShellProps) => {
               isPersistent={false}>
               <SideNavItems>
                 <HeaderSideNavItems>
-                  <MenuItems />
+                  <HeaderMenuItem
+                    isCurrentPage={window.location.pathname === "/feed"}
+                    href="/feed">
+                    My Feed
+                  </HeaderMenuItem>
+                  <HeaderMenuItem
+                    isCurrentPage={window.location.pathname === "/groups"}
+                    href="/groups">
+                    My Groups
+                  </HeaderMenuItem>
                 </HeaderSideNavItems>
               </SideNavItems>
             </SideNav>

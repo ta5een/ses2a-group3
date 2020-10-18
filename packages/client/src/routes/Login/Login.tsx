@@ -45,8 +45,17 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
     document.title = "Group Interest – Login";
   });
 
-  const location = useLocation<{ from: { pathname: string } }>();
-  const { from } = location.state || { from: { pathname: "/" } };
+  type LocationState = {
+    didRedirect: boolean;
+    didSignOut?: boolean;
+    from: { pathname: string };
+  };
+  const location = useLocation<LocationState>();
+  const { didRedirect, didSignOut, from } = location.state || {
+    didRedirect: false,
+    didSignOut: false,
+    from: { pathname: "/" },
+  };
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,6 +92,12 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
     return <Redirect to={from} />;
   }
 
+  const infoMessage = didSignOut
+    ? "You've been successfully logged out."
+    : didRedirect
+    ? "You must be logged in to view this page first."
+    : null;
+
   return (
     <Form
       title="Log in"
@@ -91,6 +106,8 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
       submitButtonText="Log in"
       canSubmit={validation.email.isValid && validation.password.isValid}
       onSubmit={e => handleLogin(e, { email, password })}
+      isInfo={didRedirect || didSignOut}
+      infoMessage={infoMessage}
       isError={loginOutcome.didFail}
       errorMessage={loginOutcome.message}>
       <TextInput

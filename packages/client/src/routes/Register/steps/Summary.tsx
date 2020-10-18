@@ -3,7 +3,7 @@ import { Tag } from "carbon-components-react";
 
 import RegistrationContext, {
   CurrentProgress,
-} from "context/register-context";
+} from "context/register";
 import { AuthApi, UserApi, InterestApi } from "api";
 import { Form } from "components";
 import "./Summary.scss";

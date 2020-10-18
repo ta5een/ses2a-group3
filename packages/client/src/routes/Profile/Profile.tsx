@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Button,
   InlineNotification,
@@ -6,7 +7,7 @@ import {
   Tag,
   TagSkeleton,
 } from "carbon-components-react";
-import { Edit16 } from "@carbon/icons-react";
+import { Edit16, /* Chat16 */ } from "@carbon/icons-react";
 
 import { AuthApi, InterestApi, UserApi } from "api";
 import "./Profile.scss";
@@ -23,28 +24,29 @@ type ProfileTileProps = {
   details: ProfileDetails;
 };
 
-const ProfileTile = ({ isLoading, details }: ProfileTileProps) => {
+const ProfileDetails = ({ isLoading, details }: ProfileTileProps) => {
   return (
     <div className="profile-page__container">
       <div className="profile-page__container-left">
         <div className="profile-page__avatar-container">
           <img
+            draggable={false}
             className="profile-page__avatar"
             src="https://picsum.photos/400"
             alt="avatar"
           />
         </div>
-        <h1>
-          {isLoading ? <SkeletonText heading width="150px" /> : details.name}
-        </h1>
-        <p>{isLoading ? <SkeletonText width="180px" /> : details.email}</p>
-        <p>
-          {isLoading ? (
-            <SkeletonText width="170px" />
-          ) : (
-            `Joined ${new Date(details.created).toLocaleDateString()}`
-          )}
-        </p>
+        {isLoading ? (
+          <SkeletonText heading width="150px" />
+        ) : (
+          <h1>{details.name}</h1>
+        )}
+        {isLoading ? <SkeletonText width="180px" /> : <p>{details.email}</p>}
+        {isLoading ? (
+          <SkeletonText width="170px" />
+        ) : (
+          <p>Joined {new Date(details.created).toLocaleDateString()}</p>
+        )}
         <div className="profile-page__actions">
           <Button
             hasIconOnly
@@ -53,6 +55,13 @@ const ProfileTile = ({ isLoading, details }: ProfileTileProps) => {
             iconDescription="Edit profile"
             tooltipPosition="bottom"
           />
+          {/* <Button
+            hasIconOnly
+            kind="tertiary"
+            renderIcon={Chat16}
+            iconDescription="Send a message"
+            tooltipPosition="bottom"
+          /> */}
           <Button kind="tertiary">Follow</Button>
         </div>
       </div>
@@ -61,7 +70,7 @@ const ProfileTile = ({ isLoading, details }: ProfileTileProps) => {
         <div className="profile-page__container-right__tags">
           {isLoading
             ? [...Array(5).keys()].map((_, i) => <TagSkeleton key={i} />)
-            : details.interests.map((interest, i) => (
+            : details.interests.sort().map((interest, i) => (
                 <Tag key={i}>{interest}</Tag>
               ))}
         </div>
@@ -84,12 +93,13 @@ const ProfileTile = ({ isLoading, details }: ProfileTileProps) => {
   );
 };
 
-type ProfileProps = {
+type ProfileMatchProps = {
   id: string;
 };
 
-const Profile = ({ id }: ProfileProps) => {
+const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
   const { token } = AuthApi.authentication();
+  const profileId = match.params.id;
 
   type Outcome = { didFail: boolean; message?: string };
   const [outcome, setOutcome] = useState<Outcome>({ didFail: false });
@@ -105,14 +115,13 @@ const Profile = ({ id }: ProfileProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const readUserParams = { _id: id, token };
+        const readUserParams = { _id: profileId, token };
         const {
           name,
           email,
           created,
           interests: interestIds,
         } = await UserApi.readUser(readUserParams);
-        console.log(new Date(created));
 
         let interests: string[] = [];
         for (const id of interestIds) {
@@ -129,7 +138,7 @@ const Profile = ({ id }: ProfileProps) => {
     };
 
     fetchUser().then(_ => setIsLoading(false));
-  }, [id, token]);
+  }, [profileId, token]);
 
   return (
     <div className="profile-page">
@@ -142,10 +151,10 @@ const Profile = ({ id }: ProfileProps) => {
           subtitle={outcome.message || "An unknown error occurred"}
         />
       ) : (
-        <ProfileTile isLoading={isLoading} details={values} />
+        <ProfileDetails isLoading={isLoading} details={values} />
       )}
     </div>
   );
 };
 
-export default Profile;
+export default withRouter(Profile);

@@ -3,7 +3,7 @@ import { FileUploader } from "carbon-components-react";
 
 import RegistrationContext, {
   CurrentProgress,
-} from "context/register-context";
+} from "context/register";
 import { Form } from "components";
 
 const Personalization = () => {

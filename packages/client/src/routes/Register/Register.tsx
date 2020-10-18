@@ -4,7 +4,7 @@ import { useLocation, Redirect } from "react-router-dom";
 import RegistrationContext, {
   CurrentProgress,
   RegistrationDetails,
-} from "context/register-context";
+} from "context/register";
 import { Account, Interests, ProfileImage, Summary } from "./steps";
 
 type RegisterProps = {

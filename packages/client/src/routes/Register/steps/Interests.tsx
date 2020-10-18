@@ -8,7 +8,7 @@ import {
 } from "carbon-components-react";
 import { Add16 } from "@carbon/icons-react";
 
-import RegistrationContext, { CurrentProgress } from "context/register-context";
+import RegistrationContext, { CurrentProgress } from "context/register";
 import { InterestApi } from "api";
 import { Form } from "components";
 

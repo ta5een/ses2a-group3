@@ -22,11 +22,12 @@ export async function signIn(params: SignInParams): Promise<SignInResult> {
   }
 }
 
-export type SignOutResponse = void;
+export type SignOutResult = void;
 
-export async function signOut(): Promise<SignOutResponse> {
+export async function signOut(callback?: () => void): Promise<SignOutResult> {
   try {
     await fetch("/api/auth/sign-out", { method: "GET" });
+    callback && callback();
   } catch (error) {
     console.error(error.message || error);
     throw error;

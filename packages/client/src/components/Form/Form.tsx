@@ -22,6 +22,8 @@ type FormProps = {
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   showPreviousButton?: boolean;
   onPrevious?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isInfo?: boolean;
+  infoMessage?: string;
   isError?: boolean;
   errorMessage?: string;
   isLoading?: boolean;
@@ -40,6 +42,8 @@ const Form = (props: FormProps) => {
     onSubmit,
     showPreviousButton,
     onPrevious,
+    isInfo,
+    infoMessage,
     isError,
     errorMessage,
     isLoading,
@@ -48,12 +52,14 @@ const Form = (props: FormProps) => {
     children,
   } = props;
 
+  const headerClass = isError || isInfo ? "form-header-message" : "form-header";
+
   return (
     <div className="form">
       <Tile style={{ padding: 0 }}>
         <CarbonForm onSubmit={onSubmit ? onSubmit : handleOnSubmit}>
           <div className="form-content">
-            <div className={isError ? "form-header-error" : "form-header"}>
+            <div className={headerClass}>
               <h3>{title}</h3>
               <p>
                 {caption}{" "}
@@ -63,14 +69,24 @@ const Form = (props: FormProps) => {
               </p>
             </div>
 
-            {isError && (
+            {isError ? (
               <InlineNotification
                 hideCloseButton
                 lowContrast
                 kind="error"
                 title="Error:"
-                subtitle={errorMessage || "An error occurred"}
+                subtitle={errorMessage || "An unknown error occurred"}
               />
+            ) : (
+              isInfo && (
+                <InlineNotification
+                  hideCloseButton
+                  lowContrast
+                  kind="info"
+                  title="Info:"
+                  subtitle={infoMessage}
+                />
+              )
             )}
 
             <div className="form-body">
