@@ -93,7 +93,7 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
   }
 
   const infoMessage = didSignOut
-    ? "You've been successfully logged out."
+    ? "You have been successfully logged out."
     : didRedirect
     ? "You must be logged in to view this page first."
     : null;

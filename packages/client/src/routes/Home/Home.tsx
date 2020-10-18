@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SkeletonText } from "carbon-components-react";
+import { Search, SkeletonText } from "carbon-components-react";
 
 import { AuthApi, UserApi } from "api";
 import { GroupList } from "routes/Groups";
@@ -27,6 +27,7 @@ const Home = () => {
       ) : (
         <div>
           <h1>Welcome, {name}</h1>
+          <Search labelText="Search groups" placeHolderText="Search groups" />
           <GroupList />
         </div>
       )}
