@@ -3,9 +3,7 @@ import { Route, Redirect, RouteProps } from "react-router-dom";
 
 import { AuthContext } from "context";
 
-type PrivateRouteProps = { component: typeof React.Component } & RouteProps;
-
-const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
+const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
   const authContext = useContext(AuthContext);
 
   return (

@@ -13,6 +13,7 @@ export interface RegistrationDetails {
   password?: string;
   confirmPassword?: string;
   avatar?: Buffer;
+  about?: string;
   interests?: string[];
 }
 

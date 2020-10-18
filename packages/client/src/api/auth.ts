@@ -27,7 +27,7 @@ export type SignOutResult = void;
 export async function signOut(callback?: () => void): Promise<SignOutResult> {
   try {
     await fetch("/api/auth/sign-out", { method: "GET" });
-    callback && callback();
+    clearJwt(callback);
   } catch (error) {
     console.error(error.message || error);
     throw error;
@@ -80,9 +80,9 @@ export async function clearJwt(callback: () => void) {
   try {
     await signOut();
     document.cookie = "t=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    callback();
+    callback && callback();
   } catch (error) {
-    console.log(error.message || error);
+    console.error(error.message || error);
   }
 }
 

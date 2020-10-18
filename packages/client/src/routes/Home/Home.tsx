@@ -17,7 +17,7 @@ const Home = () => {
     };
 
     fetchUser();
-  }, [setIsLoading, setName]);
+  }, [_id, token, setIsLoading, setName]);
 
   return (
     <div>

@@ -21,14 +21,15 @@ const Interests = (oldState: InterestsProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [interests, _setInterests] = useState(oldState.interests || [
-    "C++",
-    "Games Development",
-    "JavaScript",
-    "Web Programming",
-  ]);
+  const [interests, _setInterests] = useState(
+    oldState.interests || [
+      "C++",
+      "Games Development",
+      "JavaScript",
+      "Web Programming",
+    ]
+  );
   const setInterests = (interests: string[]) => _setInterests(interests.sort());
-
   useEffect(() => {
     const fetchAndSetInterests = async () => {
       try {
@@ -41,8 +42,12 @@ const Interests = (oldState: InterestsProps) => {
       }
     };
 
-    fetchAndSetInterests();
-  }, [setIsLoading, _setInterests]);
+    if (!oldState.interests) {
+      fetchAndSetInterests();
+    } else {
+      setIsLoading(false);
+    }
+  }, [oldState.interests, setIsLoading, _setInterests]);
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -68,7 +73,7 @@ const Interests = (oldState: InterestsProps) => {
   return (
     <Form
       title="Interests"
-      caption="Add some topics that interest you"
+      caption="Add at least three topics that interest you"
       submitButtonText="Continue"
       canSubmit={!isLoading && interests && interests.length >= 3}
       showPreviousButton={true}
@@ -100,25 +105,23 @@ const Interests = (oldState: InterestsProps) => {
             flexWrap: "wrap",
             justifyContent: "center",
           }}>
-          {isLoading ? (
-            [...Array(5).keys()].map((_, i) => (
-              <TagSkeleton key={i} />
-            ))
-          ) : interests.map((interest, i) => (
-            <Tag
-              key={i}
-              filter
-              title="Clear filter"
-              type="cool-gray"
-              onClose={_ =>
-                setInterests([
-                  ...interests.slice(0, i),
-                  ...interests.slice(i + 1),
-                ])
-              }>
-              {interest}
-            </Tag>
-          ))}
+          {isLoading
+            ? [...Array(12).keys()].map((_, i) => <TagSkeleton key={i} />)
+            : interests.map((interest, i) => (
+                <Tag
+                  key={i}
+                  filter
+                  title="Clear filter"
+                  type="cool-gray"
+                  onClose={_ =>
+                    setInterests([
+                      ...interests.slice(0, i),
+                      ...interests.slice(i + 1),
+                    ])
+                  }>
+                  {interest}
+                </Tag>
+              ))}
         </div>
       </div>
     </Form>

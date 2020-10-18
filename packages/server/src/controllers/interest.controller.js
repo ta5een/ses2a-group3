@@ -5,7 +5,7 @@ async function allInterests(_, res) {
     const interests = await Interest.find();
     res.status(200).json(interests);
   } catch (error) {
-    console.error(error);
+    console.error(error.message || error);
     res.status(400).json({ message: "Failed to retrieve interests", error });
   }
 }
@@ -24,7 +24,7 @@ async function createInterest(req, res) {
 
     res.status(200).json(newInterest);
   } catch (error) {
-    console.error(error);
+    console.error(error.message || error);
     const { code, keyValue } = error;
     if (code === 10000 || (code === 11000 && keyValue.name)) {
       res.status(401).json({
@@ -40,44 +40,45 @@ async function createInterest(req, res) {
 async function readInterest(req, res) {
   try {
     const { id } = req.params;
-    const { _id, name, users } = await Interest.findById(id);
-    res.status(200).json({ _id, name, users });
+    const interest = await Interest.findById(id);
+    res.status(200).json(interest);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Failed to get interest with given ID", error });
+    console.error(error.message || error);
+    res.status(500).json({ message: "Failed to retrieve interest", error });
   }
 }
 
 async function updateInterest(req, res) {
   try {
     const { id } = req.params;
-    const { users, appendedUser } = req.body;
+    const { users, appendedUser, removedUser } = req.body;
     const interest = await Interest.findById(id);
 
     if (users) {
       interest.users = users;
-    } else if (interest.users.indexOf(appendedUser) === -1) {
-      interest.users.push(appendedUser);
+    } else if (appendedUser) {
+      interest.appendedUser = appendedUser;
+    } else if (removedUser) {
+      interest.removedUser = removedUser;
     }
 
     const updatedInterest = await interest.save();
-
+    console.log(updatedInterest);
     res.status(200).json(updatedInterest);
   } catch (error) {
-    console.error(error);
+    console.error(error.message || error);
     res.status(500).json({ message: "Failed to update interest", error });
   }
 }
 
 async function deleteInterest(req, res) {
   try {
-    const interest = await Interest.findById(req.params.id);
+    const { id } = req.params;
+    const interest = await Interest.findById(id);
     const deletedInterest = await interest.remove();
     res.status(200).json(deletedInterest);
   } catch (error) {
-    console.error(error);
+    console.error(error.message || error);
     res.status(500).json({ message: "Failed to delete interest", error });
   }
 }

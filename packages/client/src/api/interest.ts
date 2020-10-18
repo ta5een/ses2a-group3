@@ -39,7 +39,9 @@ export async function createInterest(
 
 export type ReadInterestParams = { id: string };
 
-export async function readInterest(params: ReadInterestParams): Promise<Interest> {
+export async function readInterest(
+  params: ReadInterestParams
+): Promise<Interest> {
   try {
     const response = await fetch(`/api/interests/${params.id}`, {
       method: "GET",
@@ -57,27 +59,30 @@ export async function readInterest(params: ReadInterestParams): Promise<Interest
 }
 
 export type UpdateInterestParams = {
-  _id: string;
   name?: string;
   users?: string[];
   appendedUser?: string;
+  removedUser?: string;
 };
 export type UpdateInterestResult = Interest;
 
 export async function updateInterest(
+  id: string,
+  token: string,
   params: UpdateInterestParams
 ): Promise<UpdateInterestResult> {
   try {
-    const response = await fetch(`/api/interests/${params._id}`, {
-      method: "POST",
+    const response = await fetch(`/api/interests/${id}`, {
+      method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(params),
     });
 
-    return await handleResponse<CreateInterestResult>(response);
+    return await handleResponse<UpdateInterestResult>(response);
   } catch (error) {
     console.error(error.message || error);
     throw error;

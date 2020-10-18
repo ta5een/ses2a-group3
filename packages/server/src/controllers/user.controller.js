@@ -2,10 +2,25 @@ const { User } = require("../models");
 
 async function allUsers(_, res) {
   try {
-    const users = await User.find();
+    const users = await User.find().select([
+      "name",
+      "email",
+      "updated",
+      "created",
+      "interests",
+    ]);
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: "Failed to retrieve users", error });
+  }
+}
+
+async function userWithId(req, res, next, id) {
+  try {
+    req.user = { _id: id };
+    next();
+  } catch (error) {
+    res.status(400).json({ message: "Failed to set header", error });
   }
 }
 
@@ -13,13 +28,15 @@ async function createUser(req, res) {
   try {
     const user = new User(req.body);
     const newUser = await user.save();
+    newUser.hashedPassword = undefined;
+    newUser.salt = undefined;
     res.status(200).json(newUser);
   } catch (error) {
     const { code, keyValue } = error;
     if (code === 10000 || (code === 11000 && keyValue.email)) {
       res.status(401).json({
         message:
-          "An account with the email you provided is taken. Please use an alternative email address.",
+          "An account with the email you provided is already taken. Please use an alternative email address.",
         error,
       });
     } else {
@@ -34,16 +51,10 @@ async function createUser(req, res) {
 
 async function readUser(req, res) {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
-    res.status(200).json({
-      _id: user._id,
-      admin: user.admin,
-      name: user.name,
-      email: user.email,
-      created: user.created,
-      interests: user.interests,
-    });
+    const user = await User.findById(req.user._id);
+    user.hashedPassword = undefined;
+    user.salt = undefined;
+    res.status(200).json(user);
   } catch (error) {
     res
       .status(500)
@@ -53,8 +64,7 @@ async function readUser(req, res) {
 
 async function updateUser(req, res) {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(req.user._id);
     const updatedUser = await user.updateOne(req.body);
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -64,8 +74,10 @@ async function updateUser(req, res) {
 
 async function deleteUser(req, res) {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.user._id);
     const deletedUser = await user.remove();
+    deletedUser.hashed_password = undefined;
+    deletedUser.salt = undefined;
     res.status(200).json(deletedUser);
   } catch (error) {
     res.status(500).json({ message: "Failed to delete user", error });
@@ -74,6 +86,7 @@ async function deleteUser(req, res) {
 
 module.exports = {
   allUsers,
+  userWithId,
   createUser,
   readUser,
   updateUser,

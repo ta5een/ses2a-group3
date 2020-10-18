@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Tag } from "carbon-components-react";
 
-import RegistrationContext, {
-  CurrentProgress,
-} from "context/register";
+import RegistrationContext, { CurrentProgress } from "context/register";
 import { AuthApi, UserApi, InterestApi } from "api";
 import { Form } from "components";
 import "./Summary.scss";
@@ -31,38 +29,64 @@ const Summary = () => {
       name: details.name,
       email: details.email,
       password: details.password,
+      about: details.about,
       interests: [],
     };
 
     try {
-      const { _id: appendedUser } = await UserApi.createUser(user);
+      // Create user
+      const { _id, token } = await UserApi.createUser(user);
       const selectedInterests = details.interests;
       const allInterests = await InterestApi.allInterests();
       const allInterestsNames = allInterests.map(interest => interest.name);
 
       // Update existing interests
-      allInterests
+      const addedExistingInterests = allInterests
         .filter(interest => selectedInterests.includes(interest.name))
-        .forEach(async interest => {
-          await InterestApi.updateInterest({ _id: interest._id, appendedUser });
+        .map(async interest => {
+          return await InterestApi.updateInterest(interest._id, token, {
+            appendedUser: _id,
+          });
         });
 
       // Create new interests
-      selectedInterests
+      const addedNewInterests = selectedInterests
         .filter(interest => !allInterestsNames.includes(interest))
-        .forEach(async newInterest => {
-          const params = { name: newInterest, appendedUser };
-          const { _id: interestId } = await InterestApi.createInterest(params);
-          return interestId;
+        .map(async interest => {
+          return await InterestApi.createInterest({
+            name: interest,
+            appendedUser: _id,
+          });
         });
 
-      const signInParams = { email: details.email, password: details.password };
-      const authenticateParams = await AuthApi.signIn(signInParams);
-      AuthApi.authenticate(authenticateParams, () => {
-        setOutcome({ didFail: false });
-        console.log(AuthApi.authentication());
-        context.setRedirectToReferrer(true);
-      });
+      const pendingRequests = [...addedExistingInterests, ...addedNewInterests];
+      Promise.all(pendingRequests)
+        .then(async interests => {
+          // Log user in
+          const signInParams = {
+            email: details.email,
+            password: details.password,
+          };
+
+          const authenticateParams = await AuthApi.signIn(signInParams);
+          console.log(authenticateParams);
+
+          AuthApi.authenticate(authenticateParams, () => {
+            UserApi.updateUser(_id, { ...authenticateParams, interests })
+              .then(_ => {
+                setOutcome({ didFail: false });
+                context.setRedirectToReferrer(true);
+              })
+              .catch(error => {
+                setIsLoading(false);
+                setOutcome({ didFail: true, message: error.message || error });
+              });
+          });
+        })
+        .catch(error => {
+          setIsLoading(false);
+          setOutcome({ didFail: true, message: error.message || error });
+        });
     } catch (error) {
       setIsLoading(false);
       setOutcome({ didFail: true, message: error.message });
@@ -94,13 +118,19 @@ const Summary = () => {
             <td>{registrationDetails.email}</td>
           </tr>
           <tr>
+            <td>About</td>
+            <td>{registrationDetails.about}</td>
+          </tr>
+          <tr>
             <td>Interests</td>
             <td>
-              {registrationDetails.interests.map((interest, i) => (
-                <Tag key={i} title="Clear filter" type="cool-gray">
-                  {interest}
-                </Tag>
-              ))}
+              <div className="tags">
+                {registrationDetails.interests.sort().map((interest, i) => (
+                  <Tag key={i} title="Clear filter" type="cool-gray">
+                    {interest}
+                  </Tag>
+                ))}
+              </div>
             </td>
           </tr>
         </tbody>

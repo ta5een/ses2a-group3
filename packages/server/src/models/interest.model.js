@@ -14,4 +14,10 @@ InterestSchema.virtual("appendedUser").set(function (newUser) {
   this.users = [...this.users, newUser];
 });
 
+InterestSchema.virtual("removedUser").set(function (removedUser) {
+  this.users = this.users.filter(userId => {
+    return userId.toString() !== removedUser.toString();
+  });
+});
+
 module.exports = model("Interest", InterestSchema);

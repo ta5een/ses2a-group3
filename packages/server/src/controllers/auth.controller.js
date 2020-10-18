@@ -30,7 +30,9 @@ function signOut(_, res) {
 }
 
 function hasAuthorization(req, res, next) {
-  const authorized = req.auth && req.profile && req.profile._id == req.auth._id;
+  const authorized =
+    req.user && req.auth && req.user._id.toString() === req.auth._id;
+
   if (!authorized) {
     res.status(403).json({ message: "User is not authorized" });
   }

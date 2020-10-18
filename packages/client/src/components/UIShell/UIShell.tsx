@@ -53,7 +53,7 @@ const UIShell = ({ children }: UIShellProps) => {
         redirectTo("/login");
         break;
       case "Logout":
-        AuthApi.clearJwt(() => redirectTo("/logout"));
+        AuthApi.signOut(() => redirectTo("/logout"));
         break;
       case "Profile":
         redirectTo(`/profile/${authContext.authentication.id}`);

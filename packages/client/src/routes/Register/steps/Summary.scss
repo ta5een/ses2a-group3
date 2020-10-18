@@ -14,3 +14,7 @@ td:first-child {
 td:last-child {
   max-width: 250px;
 }
+
+.tags *:first-child {
+  margin-left: 0;
+}

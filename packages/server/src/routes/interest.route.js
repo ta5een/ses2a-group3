@@ -8,7 +8,7 @@ router.route("/").get(Interest.allInterests).post(Interest.createInterest);
 router
   .route("/:id")
   .get(Interest.readInterest)
-  .post(Auth.requireSignIn, Interest.updateInterest)
+  .put(Auth.requireSignIn, Interest.updateInterest)
   .delete(Auth.requireSignIn, Interest.deleteInterest);
 
 module.exports = router;

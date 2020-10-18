@@ -7,7 +7,7 @@ import {
   Tag,
   TagSkeleton,
 } from "carbon-components-react";
-import { Edit16, /* Chat16 */ } from "@carbon/icons-react";
+import { Edit16 /* Chat16 */ } from "@carbon/icons-react";
 
 import { AuthApi, InterestApi, UserApi } from "api";
 import "./Profile.scss";
@@ -16,6 +16,7 @@ type ProfileDetails = {
   name: string;
   email: string;
   created: Date;
+  about?: string;
   interests: string[];
 };
 
@@ -66,13 +67,15 @@ const ProfileDetails = ({ isLoading, details }: ProfileTileProps) => {
         </div>
       </div>
       <div className="profile-page__container-right">
+        <h2>About</h2>
+        {isLoading ? <SkeletonText /> : <p>{details.about || "No description"}</p>}
         <h2>Interests</h2>
         <div className="profile-page__container-right__tags">
           {isLoading
             ? [...Array(5).keys()].map((_, i) => <TagSkeleton key={i} />)
-            : details.interests.sort().map((interest, i) => (
-                <Tag key={i}>{interest}</Tag>
-              ))}
+            : details.interests
+                .sort()
+                .map((interest, i) => <Tag key={i}>{interest}</Tag>)}
         </div>
         <h2>Active groups</h2>
         <p>
@@ -120,6 +123,7 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
           name,
           email,
           created,
+          about,
           interests: interestIds,
         } = await UserApi.readUser(readUserParams);
 
@@ -130,7 +134,7 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
 
         document.title = `Group Interest – ${name}'s Profile`;
         setOutcome({ didFail: false });
-        setValues({ name, email, created: new Date(created), interests });
+        setValues({ name, email, created: new Date(created), about, interests });
       } catch (error) {
         setIsLoading(false);
         setOutcome({ didFail: true, message: error.message });
