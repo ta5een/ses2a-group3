@@ -3,10 +3,12 @@ const { User } = require("../models");
 async function allUsers(_, res) {
   try {
     const users = await User.find().select([
+      "admin",
       "name",
       "email",
-      "updated",
       "created",
+      "lastUpdated",
+      "about",
       "interests",
     ]);
     res.status(200).json(users);
@@ -64,9 +66,9 @@ async function readUser(req, res) {
 
 async function updateUser(req, res) {
   try {
-    const user = await User.findById(req.user._id);
-    const updatedUser = await user.updateOne(req.body);
-    res.status(200).json(updatedUser);
+    const oldUser = await User.findById(req.user._id);
+    await oldUser.updateOne(req.body);
+    res.status(200).json(oldUser);
   } catch (error) {
     res.status(500).json({ message: "Failed to update user", error });
   }

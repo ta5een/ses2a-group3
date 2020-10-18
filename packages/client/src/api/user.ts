@@ -1,6 +1,17 @@
 import { Interest } from "./interest";
 import { handleResponse } from "./utils";
 
+export type User = {
+  _id: string;
+  admin: boolean;
+  name: string;
+  email: string;
+  created: string;
+  lastUpdated: string;
+  about: string;
+  interests: string[];
+};
+
 export type CreateUserParams = {
   name: string;
   email: string;
@@ -8,11 +19,8 @@ export type CreateUserParams = {
   about: string;
   interests: string[];
 };
-export type CreateUserResult = { _id: string; token: string };
 
-export async function createUser(
-  user: CreateUserParams
-): Promise<CreateUserResult> {
+export async function createUser(user: CreateUserParams): Promise<User> {
   try {
     const response = await fetch("/api/users", {
       method: "POST",
@@ -23,7 +31,7 @@ export async function createUser(
       body: JSON.stringify(user),
     });
 
-    return await handleResponse<CreateUserResult>(response);
+    return await handleResponse<User>(response);
   } catch (error) {
     console.error(error.message || error);
     throw error;
@@ -31,19 +39,8 @@ export async function createUser(
 }
 
 export type ReadUserParams = { _id: string; token: string };
-export type ReadUserResult = {
-  _id: string;
-  admin: boolean;
-  name: string;
-  email: string;
-  created: string;
-  about?: string;
-  interests: string[];
-};
 
-export async function readUser(
-  params: ReadUserParams
-): Promise<ReadUserResult> {
+export async function readUser(params: ReadUserParams): Promise<User> {
   try {
     const response = await fetch(`/api/users/${params._id}`, {
       method: "GET",
@@ -54,7 +51,7 @@ export async function readUser(
       },
     });
 
-    return await handleResponse<ReadUserResult>(response);
+    return await handleResponse<User>(response);
   } catch (error) {
     console.error(error.message || error);
     throw error;
@@ -62,7 +59,6 @@ export async function readUser(
 }
 
 export type UpdateUserParams = {
-  token: string;
   name?: string;
   email?: string;
   password?: string;
@@ -75,6 +71,7 @@ export type UpdateUserResult = {
 
 export async function updateUser(
   id: string,
+  token: string,
   params: UpdateUserParams
 ): Promise<UpdateUserResult> {
   try {
@@ -83,7 +80,7 @@ export async function updateUser(
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${params.token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(params),
     });

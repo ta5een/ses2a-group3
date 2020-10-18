@@ -35,13 +35,18 @@ const Summary = () => {
 
     try {
       // Create user
-      const { _id, token } = await UserApi.createUser(user);
+      await UserApi.createUser(user);
+      const { _id, token } = await AuthApi.signIn({
+        email: details.email,
+        password: details.password,
+      });
+
       const selectedInterests = details.interests;
       const allInterests = await InterestApi.allInterests();
       const allInterestsNames = allInterests.map(interest => interest.name);
 
       // Update existing interests
-      const addedExistingInterests = allInterests
+      const existingInterests = allInterests
         .filter(interest => selectedInterests.includes(interest.name))
         .map(async interest => {
           return await InterestApi.updateInterest(interest._id, token, {
@@ -50,7 +55,7 @@ const Summary = () => {
         });
 
       // Create new interests
-      const addedNewInterests = selectedInterests
+      const newInterests = selectedInterests
         .filter(interest => !allInterestsNames.includes(interest))
         .map(async interest => {
           return await InterestApi.createInterest({
@@ -59,34 +64,18 @@ const Summary = () => {
           });
         });
 
-      const pendingRequests = [...addedExistingInterests, ...addedNewInterests];
-      Promise.all(pendingRequests)
-        .then(async interests => {
-          // Log user in
-          const signInParams = {
-            email: details.email,
-            password: details.password,
-          };
+      // Resolve all interests
+      const pendingRequests = [...existingInterests, ...newInterests];
+      const resolvedInterests = await Promise.all(pendingRequests);
 
-          const authenticateParams = await AuthApi.signIn(signInParams);
-          console.log(authenticateParams);
-
-          AuthApi.authenticate(authenticateParams, () => {
-            UserApi.updateUser(_id, { ...authenticateParams, interests })
-              .then(_ => {
-                setOutcome({ didFail: false });
-                context.setRedirectToReferrer(true);
-              })
-              .catch(error => {
-                setIsLoading(false);
-                setOutcome({ didFail: true, message: error.message || error });
-              });
-          });
-        })
-        .catch(error => {
-          setIsLoading(false);
-          setOutcome({ didFail: true, message: error.message || error });
-        });
+      // Update user and authenticate before redirecting
+      await UserApi.updateUser(_id, token, { interests: resolvedInterests });
+      AuthApi.authenticate({ _id, token }, () => {
+        console.log("User successfully authenticated");
+        setIsLoading(false);
+        setOutcome({ didFail: false });
+        context.setRedirectToReferrer(true);
+      });
     } catch (error) {
       setIsLoading(false);
       setOutcome({ didFail: true, message: error.message });
