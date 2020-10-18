@@ -37,13 +37,13 @@ export async function createInterest(
   }
 }
 
-export type ReadInterestParams = { id: string };
+export type ReadInterestParams = { _id: string };
 
 export async function readInterest(
   params: ReadInterestParams
 ): Promise<Interest> {
   try {
-    const response = await fetch(`/api/interests/${params.id}`, {
+    const response = await fetch(`/api/interests/${params._id}`, {
       method: "GET",
       headers: {
         Accept: "application/json",

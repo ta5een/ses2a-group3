@@ -1,0 +1,33 @@
+$breakpoint-md: 720px;
+$breakpoint-lg: 1000px;
+
+.all-groups__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.all-groups__group-tile-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.all-groups__group-tile-container__tile {
+  width: calc(35% - (43px * 2));
+  height: 200px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+
+.all-groups__group-tile-container__tile__tags {
+  *:first-child {
+    margin-left: 0;
+  }
+}

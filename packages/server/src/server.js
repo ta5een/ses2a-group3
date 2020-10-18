@@ -31,6 +31,7 @@ mongoose
 app.use("/api/auth", routes.auth);
 app.use("/api/users", routes.user);
 app.use("/api/interests", routes.interest);
+app.use("/api/groups", routes.group);
 
 app.get("*", (_, res) => {
   res.status(200).json({ message: "Hello, world!" });

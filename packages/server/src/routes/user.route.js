@@ -5,10 +5,10 @@ const router = Router();
 
 router.route("/").get(User.allUsers).post(User.createUser);
 
-router.param("id", User.userWithId);
+router.param("userId", User.userWithId);
 
 router
-  .route("/:id")
+  .route("/:userId")
   .get(Auth.requireSignIn, User.readUser)
   .put(Auth.requireSignIn, Auth.hasAuthorization, User.updateUser)
   .delete(Auth.requireSignIn, Auth.hasAuthorization, User.deleteUser);

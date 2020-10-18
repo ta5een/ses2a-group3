@@ -30,6 +30,7 @@ const Interests = (oldState: InterestsProps) => {
     ]
   );
   const setInterests = (interests: string[]) => _setInterests(interests.sort());
+  
   useEffect(() => {
     const fetchAndSetInterests = async () => {
       try {

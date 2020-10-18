@@ -3,7 +3,15 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Content } from "carbon-components-react";
 
 import { PrivateRoute, UIShell } from "./components";
-import { Home, Login, NotFound, Profile, Register, Settings } from "./routes";
+import {
+  Group,
+  Home,
+  Login,
+  NotFound,
+  Profile,
+  Register,
+  Settings,
+} from "./routes";
 import { AuthApi } from "api";
 import AuthContext from "context/auth";
 import "./App.scss";
@@ -31,6 +39,8 @@ const App = () => {
       />
 
       <PrivateRoute path="/profile/:id" component={Profile} />
+      <PrivateRoute path="/groups/new" component={Group.NewGroup} />
+      <PrivateRoute path="/groups/" component={Group.AllGroups} />
       <PrivateRoute path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>

@@ -9,7 +9,8 @@ import {
 } from "carbon-components-react";
 import { Edit16, Chat16 } from "@carbon/icons-react";
 
-import { AuthApi, InterestApi, UserApi } from "api";
+import { AuthApi, GroupApi, InterestApi, UserApi } from "api";
+import { Group } from "api/group";
 import "./Profile.scss";
 
 type ProfileDetails = {
@@ -22,15 +23,38 @@ type ProfileDetails = {
 
 type ProfileTileProps = {
   isLoading: boolean;
+  token: string;
+  myId: string;
   isPersonalProfile: boolean;
-  details: ProfileDetails;
+  details?: ProfileDetails;
 };
 
 const ProfileDetails = ({
-  isLoading,
+  // isLoading,
+  token,
   isPersonalProfile,
+  myId,
   details,
 }: ProfileTileProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const allGroups = await GroupApi.listAllGroups(token);
+      return allGroups.filter(group => group.moderator !== myId);
+    };
+
+    fetchGroups()
+      .then(groups => {
+        setIsLoading(false);
+        setGroups(groups);
+      })
+      .catch(error => {
+        console.error(`An error occurred when fetching groups: ${error}`);
+      });
+  }, []);
+
   return (
     <div className="profile-page__container">
       <div className="profile-page__container-left">
@@ -91,20 +115,10 @@ const ProfileDetails = ({
         ) : (
           <p>{details.about || "No description"}</p>
         )}
-        <h2>Active groups</h2>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laborum
-          consequatur autem corporis voluptas reiciendis delectus exercitationem
-          doloribus aliquid ex ea aspernatur quo numquam quos quia, tenetur
-          mollitia enim obcaecati rerum?
-        </p>
-        <h2>Administered groups</h2>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laborum
-          consequatur autem corporis voluptas reiciendis delectus exercitationem
-          doloribus aliquid ex ea aspernatur quo numquam quos quia, tenetur
-          mollitia enim obcaecati rerum?
-        </p>
+        <h2>Groups</h2>
+        {groups.map((group, i) => (
+          <p key={i}>{group.name}</p>
+        ))}
       </div>
     </div>
   );
@@ -142,8 +156,8 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
         } = await UserApi.readUser(readUserParams);
 
         let interests: string[] = [];
-        for (const id of interestIds) {
-          interests.push((await InterestApi.readInterest({ id })).name);
+        for (const _id of interestIds) {
+          interests.push((await InterestApi.readInterest({ _id })).name);
         }
 
         document.title = `Group Interest – ${name}'s Profile`;
@@ -176,7 +190,9 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
         />
       ) : (
         <ProfileDetails
+          token={token}
           isLoading={isLoading}
+          myId={myId}
           isPersonalProfile={myId === profileId}
           details={values}
         />

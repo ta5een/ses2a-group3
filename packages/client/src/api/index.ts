@@ -1,5 +1,6 @@
 import * as AuthApi from "./auth";
-import * as UserApi from "./user";
+import * as GroupApi from "./group";
 import * as InterestApi from "./interest";
+import * as UserApi from "./user";
 
-export { AuthApi, UserApi, InterestApi };
+export { AuthApi, GroupApi, InterestApi, UserApi };

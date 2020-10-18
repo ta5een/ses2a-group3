@@ -1,7 +1,9 @@
-const User = require("./user.model");
+const Group = require("./group.model");
 const Interest = require("./interest.model");
+const User = require("./user.model");
 
 module.exports = {
-  User,
+  Group,
   Interest,
+  User,
 };

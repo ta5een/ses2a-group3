@@ -63,7 +63,6 @@ async function updateInterest(req, res) {
     }
 
     const updatedInterest = await interest.save();
-    console.log(updatedInterest);
     res.status(200).json(updatedInterest);
   } catch (error) {
     console.error(error.message || error);
