@@ -42,7 +42,7 @@ const ProfileDetails = ({
   useEffect(() => {
     const fetchGroups = async () => {
       const allGroups = await GroupApi.listAllGroups(token);
-      return allGroups.filter(group => group.moderator !== myId);
+      return allGroups.filter(group => group.moderator === myId);
     };
 
     fetchGroups()

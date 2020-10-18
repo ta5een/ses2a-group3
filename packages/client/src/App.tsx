@@ -40,7 +40,7 @@ const App = () => {
 
       <PrivateRoute path="/profile/:id" component={Profile} />
       <PrivateRoute path="/groups/new" component={Group.NewGroup} />
-      <PrivateRoute path="/groups/" component={Group.AllGroups} />
+      <PrivateRoute path="/groups/" component={Group.MyGroups} />
       <PrivateRoute path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
