@@ -7,7 +7,7 @@ import {
   Tag,
   TagSkeleton,
 } from "carbon-components-react";
-import { Edit16 /* Chat16 */ } from "@carbon/icons-react";
+import { Edit16, Chat16 } from "@carbon/icons-react";
 
 import { AuthApi, InterestApi, UserApi } from "api";
 import "./Profile.scss";
@@ -22,10 +22,15 @@ type ProfileDetails = {
 
 type ProfileTileProps = {
   isLoading: boolean;
+  isPersonalProfile: boolean;
   details: ProfileDetails;
 };
 
-const ProfileDetails = ({ isLoading, details }: ProfileTileProps) => {
+const ProfileDetails = ({
+  isLoading,
+  isPersonalProfile,
+  details,
+}: ProfileTileProps) => {
   return (
     <div className="profile-page__container">
       <div className="profile-page__container-left">
@@ -49,26 +54,29 @@ const ProfileDetails = ({ isLoading, details }: ProfileTileProps) => {
           <p>Joined {new Date(details.created).toLocaleDateString()}</p>
         )}
         <div className="profile-page__actions">
-          <Button
-            hasIconOnly
-            kind="tertiary"
-            renderIcon={Edit16}
-            iconDescription="Edit profile"
-            tooltipPosition="bottom"
-          />
-          {/* <Button
-            hasIconOnly
-            kind="tertiary"
-            renderIcon={Chat16}
-            iconDescription="Send a message"
-            tooltipPosition="bottom"
-          /> */}
-          <Button kind="tertiary">Follow</Button>
+          {isPersonalProfile ? (
+            <Button
+              kind="tertiary"
+              renderIcon={Edit16}
+              iconDescription="Edit profile"
+              tooltipPosition="bottom">
+              Edit profile
+            </Button>
+          ) : (
+            <>
+              <Button
+                hasIconOnly
+                kind="tertiary"
+                renderIcon={Chat16}
+                iconDescription="Send a message"
+                tooltipPosition="bottom"
+              />
+              <Button kind="tertiary">Follow</Button>
+            </>
+          )}
         </div>
       </div>
       <div className="profile-page__container-right">
-        <h2>About</h2>
-        {isLoading ? <SkeletonText /> : <p>{details.about || "No description"}</p>}
         <h2>Interests</h2>
         <div className="profile-page__container-right__tags">
           {isLoading
@@ -77,6 +85,12 @@ const ProfileDetails = ({ isLoading, details }: ProfileTileProps) => {
                 .sort()
                 .map((interest, i) => <Tag key={i}>{interest}</Tag>)}
         </div>
+        <h2>About</h2>
+        {isLoading ? (
+          <SkeletonText />
+        ) : (
+          <p>{details.about || "No description"}</p>
+        )}
         <h2>Active groups</h2>
         <p>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laborum
@@ -101,7 +115,7 @@ type ProfileMatchProps = {
 };
 
 const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
-  const { token } = AuthApi.authentication();
+  const { id: myId, token } = AuthApi.authentication();
   const profileId = match.params.id;
 
   type Outcome = { didFail: boolean; message?: string };
@@ -134,7 +148,13 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
 
         document.title = `Group Interest – ${name}'s Profile`;
         setOutcome({ didFail: false });
-        setValues({ name, email, created: new Date(created), about, interests });
+        setValues({
+          name,
+          email,
+          created: new Date(created),
+          about,
+          interests,
+        });
       } catch (error) {
         setIsLoading(false);
         setOutcome({ didFail: true, message: error.message });
@@ -155,7 +175,11 @@ const Profile = ({ match }: RouteComponentProps<ProfileMatchProps>) => {
           subtitle={outcome.message || "An unknown error occurred"}
         />
       ) : (
-        <ProfileDetails isLoading={isLoading} details={values} />
+        <ProfileDetails
+          isLoading={isLoading}
+          isPersonalProfile={myId === profileId}
+          details={values}
+        />
       )}
     </div>
   );
