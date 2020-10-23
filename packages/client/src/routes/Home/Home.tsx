@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-  Dropdown,
   Search,
   Select,
   SelectItem,
-  SelectItemGroup,
   SkeletonText,
   Tile,
 } from "carbon-components-react";

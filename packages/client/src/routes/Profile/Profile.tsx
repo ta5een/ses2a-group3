@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Button,
+  Icon,
   InlineNotification,
   SkeletonText,
   Tag,
   TagSkeleton,
 } from "carbon-components-react";
-import { Edit16, Chat16 } from "@carbon/icons-react";
+import { Group16, UserFollow16 } from "@carbon/icons-react";
 
 import { AuthApi, GroupApi, InterestApi, UserApi } from "api";
 import { Group } from "api/group";
@@ -30,7 +31,6 @@ type ProfileTileProps = {
 };
 
 const ProfileDetails = ({
-  // isLoading,
   token,
   isPersonalProfile,
   myId,
@@ -62,7 +62,11 @@ const ProfileDetails = ({
           <img
             draggable={false}
             className="profile-page__avatar"
-            src={isPersonalProfile ? "https://i.picsum.photos/id/599/400/400.jpg?hmac=Uny4ZMfOwgf6u1rjSyp2eDkNZPN_DloHpkFCuvZC55s" : "https://picsum.photos/400"}
+            src={
+              isPersonalProfile
+                ? "https://i.picsum.photos/id/599/400/400.jpg?hmac=Uny4ZMfOwgf6u1rjSyp2eDkNZPN_DloHpkFCuvZC55s"
+                : "https://picsum.photos/400"
+            }
             alt="avatar"
           />
         </div>
@@ -78,17 +82,11 @@ const ProfileDetails = ({
           <p>Joined {new Date(details.created).toLocaleDateString()}</p>
         )}
         <div className="profile-page__actions">
-          {
-            isPersonalProfile && (
-              <Button
-                kind="tertiary"
-                renderIcon={Edit16}
-                iconDescription="Edit profile"
-                tooltipPosition="bottom">
-                Edit profile
-              </Button>
-            ) /* : (<Button kind="tertiary">Follow</Button>) */
-          }
+          {!isPersonalProfile && (
+            <Button kind="tertiary" renderIcon={UserFollow16}>
+              Follow
+            </Button>
+          )}
         </div>
       </div>
       <div className="profile-page__container-right">
@@ -107,7 +105,9 @@ const ProfileDetails = ({
           <p>{details.about || "No description"}</p>
         )}
         <h2>Groups</h2>
-        {groups.map((group, i) => (
+        {groups.length === 0 ? (
+          <p>Nothing here...</p>
+        ) : groups.map((group, i) => (
           <p key={i}>{group.name}</p>
         ))}
       </div>

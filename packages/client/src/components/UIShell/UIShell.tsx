@@ -16,11 +16,9 @@ import {
 } from "carbon-components-react";
 
 import {
-  Help20,
   Login20,
   Logout20,
   Person20,
-  Settings20,
   UserFollow20,
 } from "@carbon/icons-react";
 
@@ -46,9 +44,6 @@ const UIShell = ({ children }: UIShellProps) => {
     const redirectTo = (path: string) => (window.location.pathname = path);
 
     switch (action) {
-      // case "Help":
-      //   redirectTo("/help");
-      //   break;
       case "Login":
         redirectTo("/login");
         break;
@@ -102,18 +97,8 @@ const UIShell = ({ children }: UIShellProps) => {
 
             {/* Header Actions */}
             <HeaderGlobalBar>
-              {/* <HeaderGlobalAction
-                aria-label="Help"
-                onClick={_ => handleOnGlobalActionClick("Help")}>
-                <Help20 />
-              </HeaderGlobalAction> */}
               {authContext.authentication.isAuthenticated ? (
                 <>
-                  {/* <HeaderGlobalAction
-                    aria-label="Settings"
-                    onClick={_ => handleOnGlobalActionClick("Settings")}>
-                    <Settings20 />
-                  </HeaderGlobalAction> */}
                   <HeaderGlobalAction
                     aria-label="Profile"
                     onClick={_ => handleOnGlobalActionClick("Profile")}>

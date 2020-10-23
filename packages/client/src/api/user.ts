@@ -59,6 +59,7 @@ export async function readUser(params: ReadUserParams): Promise<User> {
 }
 
 export type UpdateUserParams = {
+  admin?: boolean;
   name?: string;
   email?: string;
   password?: string;
