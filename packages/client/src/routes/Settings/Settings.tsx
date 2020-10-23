@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Button } from "carbon-components-react";
+import { Button, Modal, ModalWrapper } from "carbon-components-react";
 
 import { AuthApi, InterestApi, UserApi } from "api";
 
@@ -34,13 +34,24 @@ const Settings = () => {
   }
 
   return (
-    <div>
+    <div className="content-container">
       <h1>Settings</h1>
       <div>
-        <h2>Account settings</h2>
-        <Button kind="danger" onClick={handleAccountDeletion}>
-          Delete my account
-        </Button>
+        <ModalWrapper
+          danger
+          buttonTriggerText="Delete my account"
+          modalHeading="Are you sure?"
+          handleSubmit={() => {
+            handleAccountDeletion().then(_ => {
+              return true;
+            });
+
+            return false;
+          }}>
+          <p>
+            Deleting your account is an <em>IRREVERSIBLE</em> action.
+          </p>
+        </ModalWrapper>
       </div>
     </div>
   );

@@ -1,0 +1,10 @@
+$breakpoint-md: 720px;
+$breakpoint-lg: 1000px;
+
+.content-container {
+  margin: auto;
+
+  @media only screen and (min-width: $breakpoint-lg) {
+    margin: auto calc(min(20%, 125px));
+  }
+}

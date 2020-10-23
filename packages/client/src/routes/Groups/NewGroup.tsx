@@ -94,7 +94,7 @@ const NewGroup = () => {
       const pendingRequests = [...existingInterests, ...newInterests];
       const resolvedInterests = await Promise.all(pendingRequests);
 
-      GroupApi.createGroup(token, {
+      GroupApi.createGroup(userId, token, {
         moderator: userId,
         name: groupName,
         description: groupDescription,

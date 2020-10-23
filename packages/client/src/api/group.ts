@@ -28,6 +28,24 @@ export async function listAllGroups(token: string): Promise<Group[]> {
   }
 }
 
+export async function listAllGroupsByModerator(token: string, userId: string) {
+  try {
+    const response = await fetch(`/api/groups/by/${userId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return await handleResponse(response);
+  } catch (error) {
+    console.error(error.message || error);
+    throw error;
+  }
+}
+
 export type CreateGroupParams = {
   moderator: string;
   name: string;
@@ -36,11 +54,12 @@ export type CreateGroupParams = {
 };
 
 export async function createGroup(
+  id: string,
   token: string,
   params: CreateGroupParams
 ): Promise<Group> {
   try {
-    const response = await fetch("/api/groups", {
+    const response = await fetch(`/api/groups/by/${id}`, {
       method: "POST",
       headers: {
         Accept: "application/json",

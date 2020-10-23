@@ -14,7 +14,7 @@ $breakpoint-lg: 1000px;
 }
 
 .all-groups__group-tile-container__tile {
-  width: calc(35% - (43px * 2));
+  width: calc(39% - (43px * 2));
   height: 200px;
   margin-right: 20px;
   margin-bottom: 20px;
@@ -25,9 +25,26 @@ $breakpoint-lg: 1000px;
   }
 }
 
+.all-groups__group-tile-container__tile-content {
+  h2 {
+    font-size: 1.5rem;
+  }
+}
 
 .all-groups__group-tile-container__tile__tags {
+  margin-bottom: 8px;
+
   *:first-child {
     margin-left: 0;
+  }
+}
+
+.all-groups__group-tile-container__tile-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+
+  *:first-child {
+    margin-right: 8px;
   }
 }

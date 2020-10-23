@@ -21,11 +21,11 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
 
   const [progress, setCurrentProgress] = useState(CurrentProgress.ACCOUNT);
   const [details, _setRegistrationDetails] = useState<RegistrationDetails>({
-    name: "John Smith",
-    email: "john.smith@email.com",
-    password: "my-secret-password-123",
-    confirmPassword: "my-secret-password-123",
-    about: "This is a short description of myself.",
+    // name: "John Smith",
+    // email: "john.smith@email.com",
+    // password: "my-secret-password-123",
+    // confirmPassword: "my-secret-password-123",
+    // about: "This is a short description of myself.",
   });
   const [redirect, setRedirectToReferrer] = useState(false);
 

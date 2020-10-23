@@ -3,10 +3,13 @@ import { Button } from "carbon-components-react";
 import { Add16 } from "@carbon/icons-react";
 
 import GroupList from "./GroupList";
+import { AuthApi } from "api";
 
 const MyGroups = () => {
+  const { id } = AuthApi.authentication();
+
   return (
-    <div>
+    <div className="content-container">
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h1>My groups</h1>
         <Button renderIcon={Add16} href="/groups/new">
@@ -15,7 +18,7 @@ const MyGroups = () => {
       </div>
 
       <div>
-        <GroupList />
+        <GroupList matches={group => group.moderator === id} />
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   TagSkeleton,
   Tile,
 } from "carbon-components-react";
+import { Edit16 } from "@carbon/icons-react";
 
 import { Group } from "api/group";
 import { User } from "api/user";
@@ -60,7 +61,10 @@ const GroupTile = ({ userId, token, group }: GroupTileProps) => {
           <h2>{group.name}</h2>
         )}
         {!isLoading && moderator ? (
-          <p>{`Moderator: ${moderator.name}`}</p>
+          <p>
+            Created by:{" "}
+            <a href={`/profile/${moderator._id}`}>{moderator.name}</a>
+          </p>
         ) : (
           <SkeletonText width="150px" />
         )}
@@ -79,7 +83,10 @@ const GroupTile = ({ userId, token, group }: GroupTileProps) => {
       </div>
       <div className="all-groups__group-tile-container__tile-actions">
         {!isLoading && moderator && userId === moderator._id ? (
-          <Button kind="danger">Delete group</Button>
+          <>
+            <Button hasIconOnly kind="tertiary" renderIcon={Edit16} />
+            <Button kind="danger">Delete group</Button>
+          </>
         ) : (
           <Button kind="tertiary">Join group</Button>
         )}
@@ -88,11 +95,18 @@ const GroupTile = ({ userId, token, group }: GroupTileProps) => {
   );
 };
 
-const GroupList = () => {
+type GroupListParams = {
+  matches?: (group: Group /* interest?: String */) => boolean;
+};
+
+const GroupList = ({ matches }: GroupListParams) => {
   const { id: userId, token } = AuthApi.authentication();
 
   const [isLoading, setIsLoading] = useState(true);
   const [groups, setGroups] = useState<Group[]>([]);
+  const filteredGroups = matches
+    ? groups.filter(group => matches(group))
+    : groups;
 
   useEffect(() => {
     const fetchAllGroups = async () => await GroupApi.listAllGroups(token);
@@ -113,7 +127,7 @@ const GroupList = () => {
         <p>Loading...</p>
       ) : (
         <div className="all-groups__group-tile-container">
-          {groups.map((group, i) => (
+          {filteredGroups.map((group, i) => (
             <GroupTile
               key={i}
               userId={userId}

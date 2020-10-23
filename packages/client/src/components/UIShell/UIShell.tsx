@@ -46,9 +46,9 @@ const UIShell = ({ children }: UIShellProps) => {
     const redirectTo = (path: string) => (window.location.pathname = path);
 
     switch (action) {
-      case "Help":
-        redirectTo("/help");
-        break;
+      // case "Help":
+      //   redirectTo("/help");
+      //   break;
       case "Login":
         redirectTo("/login");
         break;
@@ -89,31 +89,31 @@ const UIShell = ({ children }: UIShellProps) => {
             {/* Header Navigation Links */}
             <HeaderNavigation aria-label="Navigation">
               <HeaderMenuItem
-                isCurrentPage={window.location.pathname === "/feed"}
-                href="/feed">
-                My Feed
-              </HeaderMenuItem>
-              <HeaderMenuItem
                 isCurrentPage={window.location.pathname === "/groups"}
                 href="/groups">
                 My Groups
+              </HeaderMenuItem>
+              <HeaderMenuItem
+                isCurrentPage={window.location.pathname === "/settings"}
+                href="/settings">
+                Settings
               </HeaderMenuItem>
             </HeaderNavigation>
 
             {/* Header Actions */}
             <HeaderGlobalBar>
-              <HeaderGlobalAction
+              {/* <HeaderGlobalAction
                 aria-label="Help"
                 onClick={_ => handleOnGlobalActionClick("Help")}>
                 <Help20 />
-              </HeaderGlobalAction>
+              </HeaderGlobalAction> */}
               {authContext.authentication.isAuthenticated ? (
                 <>
-                  <HeaderGlobalAction
+                  {/* <HeaderGlobalAction
                     aria-label="Settings"
                     onClick={_ => handleOnGlobalActionClick("Settings")}>
                     <Settings20 />
-                  </HeaderGlobalAction>
+                  </HeaderGlobalAction> */}
                   <HeaderGlobalAction
                     aria-label="Profile"
                     onClick={_ => handleOnGlobalActionClick("Profile")}>
@@ -149,14 +149,14 @@ const UIShell = ({ children }: UIShellProps) => {
               <SideNavItems>
                 <HeaderSideNavItems>
                   <HeaderMenuItem
-                    isCurrentPage={window.location.pathname === "/feed"}
-                    href="/feed">
-                    My Feed
-                  </HeaderMenuItem>
-                  <HeaderMenuItem
                     isCurrentPage={window.location.pathname === "/groups"}
                     href="/groups">
                     My Groups
+                  </HeaderMenuItem>
+                  <HeaderMenuItem
+                    isCurrentPage={window.location.pathname === "/settings"}
+                    href="/settings">
+                    Settings
                   </HeaderMenuItem>
                 </HeaderSideNavItems>
               </SideNavItems>

@@ -62,7 +62,7 @@ const ProfileDetails = ({
           <img
             draggable={false}
             className="profile-page__avatar"
-            src="https://picsum.photos/400"
+            src={isPersonalProfile ? "https://i.picsum.photos/id/599/400/400.jpg?hmac=Uny4ZMfOwgf6u1rjSyp2eDkNZPN_DloHpkFCuvZC55s" : "https://picsum.photos/400"}
             alt="avatar"
           />
         </div>
@@ -78,26 +78,17 @@ const ProfileDetails = ({
           <p>Joined {new Date(details.created).toLocaleDateString()}</p>
         )}
         <div className="profile-page__actions">
-          {isPersonalProfile ? (
-            <Button
-              kind="tertiary"
-              renderIcon={Edit16}
-              iconDescription="Edit profile"
-              tooltipPosition="bottom">
-              Edit profile
-            </Button>
-          ) : (
-            <>
+          {
+            isPersonalProfile && (
               <Button
-                hasIconOnly
                 kind="tertiary"
-                renderIcon={Chat16}
-                iconDescription="Send a message"
-                tooltipPosition="bottom"
-              />
-              <Button kind="tertiary">Follow</Button>
-            </>
-          )}
+                renderIcon={Edit16}
+                iconDescription="Edit profile"
+                tooltipPosition="bottom">
+                Edit profile
+              </Button>
+            ) /* : (<Button kind="tertiary">Follow</Button>) */
+          }
         </div>
       </div>
       <div className="profile-page__container-right">
