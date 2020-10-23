@@ -13,10 +13,8 @@ type HomeContentProps = {
 const HomeContent = ({ heading, isAuthenticated }: HomeContentProps) => {
   return (
     <div className="home-content">
-      <h1>
-        {isAuthenticated ? heading : "Welcome to Group Interest"}
-      </h1>
-      <GroupList showSearchField={true} />
+      <h1>{isAuthenticated ? heading : "Welcome to Group Interest"}</h1>
+      <GroupList showSearchField={true} emptyText="No groups to show." />
     </div>
   );
 };

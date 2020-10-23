@@ -20,19 +20,25 @@ async function allUsers(_, res) {
 
 async function userWithId(req, res, next, id) {
   try {
-    req.user = { _id: id };
-    next();
+    let user = await User.findById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    } else {
+      req.user = { _id: id, admin: user.admin };
+      next();
+    }
   } catch (error) {
     console.log(error.message || error);
-    res.status(400).json({ message: "Failed to set header", error });
+    res.status(400).json({ message: "Failed to set user header", error });
   }
 }
 
-async function isAdmin(req, res) {
+async function isAdmin(req, res, next) {
   try {
-    const user = await User.findById(req.user._id);
-    if (user.isAdmin) {
-      res.status(200).json({ isAdmin: true });
+    console.log(req.user);
+    const isAdmin = req.user && req.user.admin;
+    if (isAdmin) {
+      next();
     } else {
       res.status(403).json({ message: "User is not an admin" });
     }

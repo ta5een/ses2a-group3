@@ -7,6 +7,7 @@ import {
   Home,
   Login,
   MyGroups,
+  NewGroup,
   NotFound,
   Profile,
   Register,
@@ -39,7 +40,7 @@ const App = () => {
       />
 
       <PrivateRoute path="/profile/:id" component={Profile} />
-      {/* <PrivateRoute path="/groups/new" component={Group.NewGroup} /> */}
+      <PrivateRoute path="/groups/new" component={NewGroup} />
       <PrivateRoute path="/groups/" component={MyGroups} />
       <PrivateRoute path="/settings" component={Settings} />
       <Route component={NotFound} />

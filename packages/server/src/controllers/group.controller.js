@@ -23,24 +23,52 @@ async function allGroupsByModerator(_, res) {
   }
 }
 
+async function groupWithId(req, res, next, id) {
+  try {
+    let group = await Group.findById(id).populate("moderator", ["_id", "name"]);
+    if (!group) {
+      res.status("400").json({ message: "Group not found" });
+    } else {
+      req.group = group;
+      next();
+    }
+  } catch (error) {
+    console.log(error.message || error);
+    res.status(400).json({ message: "Failed to set group header", error });
+  }
+}
+
+function isModerator(req, res, next) {
+  const isModerator =
+    req.group &&
+    req.auth &&
+    req.group.moderator._id.toString() === req.auth._id;
+
+  if (!isModerator) {
+    res.status(403).json({ message: "User is not a moderator" });
+  }
+
+  next();
+}
+
 async function createGroup(req, res) {
   try {
     const group = new Group(req.body);
     const newGroup = await group.save();
 
-    // const { interests } = req.body;
-    // for (const interestId of interests) {
-    //   const interest = await Interest.findById(interestId);
-    //   if (interest) {
-    //     interest.appendedGroup = [group._id];
-    //     await interest.save();
-    //   } else {
-    //     res.status(400).json({
-    //       message: `Failed to retrieve interest with ID: ${interestId}`,
-    //     });
-    //     return;
-    //   }
-    // }
+    const { interests } = req.body;
+    for (const interestId of interests) {
+      const interest = await Interest.findById(interestId);
+      if (interest) {
+        interest.appendedGroup = [group._id];
+        await interest.save();
+      } else {
+        res.status(400).json({
+          message: `Failed to retrieve interest with ID: ${interestId}`,
+        });
+        return;
+      }
+    }
 
     res.status(200).json(newGroup);
   } catch (error) {
@@ -93,6 +121,8 @@ async function deleteGroup(req, res) {
 module.exports = {
   allGroups,
   allGroupsByModerator,
+  groupWithId,
+  isModerator,
   createGroup,
   readGroup,
   updateGroup,

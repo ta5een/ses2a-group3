@@ -15,4 +15,13 @@ router
     Group.createGroup
   );
 
+router
+  .route("/:groupId")
+  .get(Group.readGroup)
+  .put(Auth.requireSignIn, Group.isModerator, Group.updateGroup)
+  .delete(Auth.requireSignIn, Group.isModerator, Group.deleteGroup);
+
+router.param("groupId", Group.groupWithId);
+router.param("userId", User.userWithId);
+
 module.exports = router;
