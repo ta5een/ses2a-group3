@@ -10,6 +10,19 @@ async function allGroups(_, res) {
   }
 }
 
+async function allGroupsByModerator(_, res) {
+  try {
+    const { _id: userId } = req.user;
+    const groups = await Group.find({ moderator: userId });
+    res.status(200).json(groups);
+  } catch (error) {
+    console.error(error.message || error);
+    res
+      .status(400)
+      .json({ message: "Failed to retrieve groups by moderator", error });
+  }
+}
+
 async function createGroup(req, res) {
   try {
     const group = new Group(req.body);
@@ -79,6 +92,7 @@ async function deleteGroup(req, res) {
 
 module.exports = {
   allGroups,
+  allGroupsByModerator,
   createGroup,
   readGroup,
   updateGroup,

@@ -28,6 +28,20 @@ async function userWithId(req, res, next, id) {
   }
 }
 
+async function isAdmin(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user.isAdmin) {
+      res.status(200).json({ isAdmin: true });
+    } else {
+      res.status(403).json({ message: "User is not an admin" });
+    }
+  } catch (error) {
+    console.log(error.message || error);
+    res.status(403).json({ message: "Failed to check if user is admin" });
+  }
+}
+
 async function createUser(req, res) {
   try {
     const user = new User(req.body);
@@ -100,6 +114,7 @@ async function deleteUser(req, res) {
 module.exports = {
   allUsers,
   userWithId,
+  isAdmin,
   createUser,
   readUser,
   updateUser,
