@@ -49,6 +49,36 @@ const GroupList = ({ showSearchField, emptyText }: GroupListProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
 
+  const [selectedInterest, setSelectedInterest] = useState<SelectInterest>({
+    label: "All interests",
+  });
+
+  const getFilteredGroups = () => {
+    if (search.length > 0) {
+      return groups.filter(it => {
+        if (selectedInterest.label === "All interests") {
+          return it.name.includes(search);
+        } else {
+          return (
+            it.name.includes(search) &&
+            it.interests.includes(selectedInterest._id)
+          );
+        }
+      });
+    } else if (selectedInterest.label !== "All interests") {
+      return groups.filter(it => it.interests.includes(selectedInterest._id));
+    } else {
+      return groups;
+    }
+  };
+
+  const filteredGroups = getFilteredGroups();
+
+  const setSelectedInterestFromString = (selection: string) => {
+    const interest = interests.find(it => it.label === selection);
+    setSelectedInterest(interest);
+  };
+
   useEffect(() => {
     const fetchAllInterests = async () => await InterestApi.allInterests();
     const fetchAllGroups = async () => await GroupApi.listAllGroups(token);
@@ -96,21 +126,29 @@ const GroupList = ({ showSearchField, emptyText }: GroupListProps) => {
             hideLabel
             id="select-interest"
             disabled={!authentication.isAuthenticated}
-            labelText="Filter by interest">
+            labelText="Filter by interest"
+            value={selectedInterest.label}
+            onChange={e => setSelectedInterestFromString(e.target.value)}>
             {interests.map((interest, i) => (
-              <SelectItem key={i} text={interest.label} value={interest._id} />
+              <SelectItem
+                key={i}
+                text={interest.label}
+                value={interest.label}
+              />
             ))}
           </Select>
         </div>
       )}
       {authentication.isAuthenticated ? (
         <>
-          {groups.length === 0 ? (
+          {filteredGroups.length === 0 ? (
             <Tile className="group-list__message-container">
               <p>{emptyText}</p>
             </Tile>
           ) : (
-            groups.map((group, i) => <GroupListItem key={i} group={group} />)
+            filteredGroups.map((group, i) => (
+              <GroupListItem key={i} group={group} />
+            ))
           )}
         </>
       ) : (
