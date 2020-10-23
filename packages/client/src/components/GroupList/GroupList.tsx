@@ -4,29 +4,77 @@ import {
   Search,
   Select,
   SelectItem,
+  Tag,
   Tile,
 } from "carbon-components-react";
 
-import { AuthApi, InterestApi, GroupApi } from "api";
+import { AuthApi, GroupApi, InterestApi, UserApi } from "api";
 import { Group } from "api/group";
 import "./GroupList.scss";
 
 type SelectInterest = { _id?: string; label: string };
 
 type GroupListItemProps = {
+  authentication: AuthApi.Authentication;
   group: Group;
 };
 
-const GroupListItem = ({ group }: GroupListItemProps) => {
+const GroupListItem = ({ authentication, group }: GroupListItemProps) => {
+  const [moderator, setModerator] = useState("");
+  const [interests, setInterests] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      return await UserApi.readUser({
+        _id: group.moderator,
+        token: authentication.token,
+      });
+    };
+
+    const fetchInterests = async () => {
+      return Promise.all(
+        group.interests.map(async id => {
+          return await InterestApi.readInterest({ _id: id });
+        })
+      );
+    };
+
+    fetchUser()
+      .then(user => setModerator(user.name))
+      .catch(error => console.error(error));
+
+    fetchInterests()
+      .then(interests => setInterests(interests.map(it => it.name)))
+      .catch(error => console.error(error));
+  }, [setModerator, setInterests]);
+
+  const handleDeleteGroup = async () => {
+    console.log("Unimplemented");
+    // await GroupApi.deleteGroup(authentication.token, { _id: group._id });
+  };
+
   return (
     <Tile className="groups-list__item">
       <div className="groups-list__item-content">
         <h2>{group.name}</h2>
-        <p>Created by: {group.moderator}</p>
+        <p>
+          Created by: <a href={`profile/${group.moderator}`}>{moderator}</a>
+        </p>
+        <div className="groups-list__item-content__tags">
+          {interests.sort().map((interest, i) => (
+            <Tag key={i}>{interest}</Tag>
+          ))}
+        </div>
         <p>{group.description}</p>
       </div>
       <div className="groups-list__item-tile-actions">
-        <Button kind="tertiary">Join group</Button>
+        {group.moderator === authentication.id ? (
+          <Button kind="danger" onClick={handleDeleteGroup}>
+            Delete group
+          </Button>
+        ) : (
+          <Button kind="tertiary">Join group</Button>
+        )}
       </div>
     </Tile>
   );
@@ -146,9 +194,15 @@ const GroupList = ({ showSearchField, emptyText }: GroupListProps) => {
               <p>{emptyText}</p>
             </Tile>
           ) : (
-            filteredGroups.map((group, i) => (
-              <GroupListItem key={i} group={group} />
-            ))
+            <div className="group-list__filtered-groups-container">
+              {filteredGroups.map((group, i) => (
+                <GroupListItem
+                  key={i}
+                  authentication={authentication}
+                  group={group}
+                />
+              ))}
+            </div>
           )}
         </>
       ) : (

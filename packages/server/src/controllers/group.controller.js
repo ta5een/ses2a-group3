@@ -110,8 +110,12 @@ async function deleteGroup(req, res) {
   try {
     const { id } = req.params;
     const group = await Group.findById(id);
-    const deletedGroup = await group.remove();
-    res.status(200).json(deletedGroup);
+    if (!group) {
+      res.status(404).json({ message: "Failed to delete group with given ID" });
+    } else {
+      const deletedGroup = await group.remove();
+      res.status(200).json(deletedGroup);
+    }
   } catch (error) {
     console.error(error.message || error);
     res.status(500).json({ message: "Failed to delete group", error });

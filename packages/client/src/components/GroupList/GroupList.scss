@@ -19,3 +19,40 @@ $breakpoint-lg: 1000px;
   margin-top: 20px;
   text-align: center;
 }
+
+.group-list__filtered-groups-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.groups-list__item {
+  width: calc(39% - (43px * 2));
+  height: 220px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+.groups-list__item-content__tags {
+  margin-bottom: 8px;
+
+  *:first-child {
+    margin-left: 0;
+  }
+}
+
+.groups-list__item-tile-actions {
+  margin: 8px 0;
+  display: flex;
+  justify-content: flex-end;
+
+  *:first-child {
+    margin-right: 8px;
+  }
+}
