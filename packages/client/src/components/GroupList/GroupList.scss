@@ -1,0 +1,21 @@
+$breakpoint-md: 720px;
+$breakpoint-lg: 1000px;
+
+.group-list__search-container {
+  display: flex;
+  margin-bottom: 20px;
+
+  @media only screen and (max-width: $breakpoint-md) {
+    flex-direction: column;
+  }
+}
+
+.group-list__search {
+  flex-grow: 2;
+  margin-right: 8px;
+}
+
+.group-list__unauthenticated-container {
+  margin-top: 20px;
+  text-align: center;
+}
