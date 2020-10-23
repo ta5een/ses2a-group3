@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Button,
-  Icon,
   InlineNotification,
   SkeletonText,
   Tag,
   TagSkeleton,
 } from "carbon-components-react";
-import { Group16, UserFollow16 } from "@carbon/icons-react";
+import { UserFollow16 } from "@carbon/icons-react";
 
 import { AuthApi, GroupApi, InterestApi, UserApi } from "api";
 import { Group } from "api/group";
@@ -53,7 +52,7 @@ const ProfileDetails = ({
       .catch(error => {
         console.error(`An error occurred when fetching groups: ${error}`);
       });
-  }, []);
+  }, [myId, token]);
 
   return (
     <div className="profile-page__container">
@@ -107,9 +106,9 @@ const ProfileDetails = ({
         <h2>Groups</h2>
         {groups.length === 0 ? (
           <p>Nothing here...</p>
-        ) : groups.map((group, i) => (
-          <p key={i}>{group.name}</p>
-        ))}
+        ) : (
+          groups.map((group, i) => <p key={i}>{group.name}</p>)
+        )}
       </div>
     </div>
   );

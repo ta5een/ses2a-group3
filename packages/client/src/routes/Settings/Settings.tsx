@@ -54,7 +54,7 @@ const Settings = () => {
         setNewAbout(user.about);
       })
       .catch(error => console.error(`Failed to read user: ${error}`));
-  }, []);
+  }, [_id, token]);
 
   const [redirectToLogin, setRedirectToLogin] = useState(false);
 
